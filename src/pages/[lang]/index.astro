@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LANGS, type Lang } from '../../i18n/lang';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<BaseLayout lang={lang} title="Dominic Baumgartner">
+  <h1>Dominic Baumgartner</h1>
+</BaseLayout>

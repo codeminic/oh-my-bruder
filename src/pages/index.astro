@@ -1,0 +1,31 @@
+---
+// Language picker: sends visitors to /de/ or /en/ based on a stored choice or the browser language.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link rel="alternate" hreflang="en" href="/en/" />
+    <link rel="alternate" hreflang="de" href="/de/" />
+    <title>Dominic Baumgartner</title>
+    <script>
+      import { detectPreferredLang, localizedPath, LANG_STORAGE_KEY } from '../i18n/lang';
+
+      let stored: string | null = null;
+      try {
+        stored = localStorage.getItem(LANG_STORAGE_KEY);
+      } catch {
+        stored = null;
+      }
+      location.replace(localizedPath(detectPreferredLang(navigator.languages ?? [navigator.language], stored)));
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p><a href="/en/">English</a> · <a href="/de/">Deutsch</a></p>
+    </noscript>
+  </body>
+</html>
