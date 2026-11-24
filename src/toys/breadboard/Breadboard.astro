@@ -59,7 +59,7 @@ const rowY: Record<string, number> = { a: 46, b: 100, c: 154 };
     <div class="bb-handle" aria-hidden="true" title={t(lang, 'toyBreadboardWire')}></div>
   </div>
   <p class="bb-status" role="status" aria-live="polite"></p>
-  <p class="toy-done">{t(lang, 'toyBreadboardDone')}</p>
+  <p class="toy-done" tabindex="-1">{t(lang, 'toyBreadboardDone')}</p>
   <template data-msg="wrong">{t(lang, 'toyBreadboardWrong')}</template>
 </div>
 
@@ -166,7 +166,10 @@ const rowY: Record<string, number> = { a: 46, b: 100, c: 154 };
       status.textContent = '';
       led.dataset.on = 'true';
       slot.dataset.complete = 'true';
+      const hadFocus = root.contains(document.activeElement);
       buttons.forEach((b) => (b.disabled = true));
+      // Disabling the focused slot would drop focus to <body>; keep keyboard users in place.
+      if (hadFocus) root.querySelector<HTMLElement>('.toy-done')!.focus();
       document.dispatchEvent(new CustomEvent('cv:toy-complete', { detail: { toy: 'breadboard' } }));
     };
 

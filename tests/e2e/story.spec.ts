@@ -83,12 +83,27 @@ test('falls back to English with lang="en" for untranslated chapters', async ({ 
 
 for (const lang of ['en', 'de'] as const) {
   test(`no horizontal scroll (${lang})`, async ({ page }) => {
+    const width = page.viewportSize()!.width;
     await page.goto(`/${lang}/`);
     await scrollThrough(page);
+    // Compare against the configured viewport: on mobile emulation innerWidth grows with overflowing content.
     const { sw, iw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
-    expect(sw).toBeLessThanOrEqual(iw);
+    expect(iw).toBe(width);
+    expect(sw).toBeLessThanOrEqual(width);
   });
 }
+
+test('a long unbroken word wraps instead of widening the page', async ({ page }) => {
+  const width = page.viewportSize()!.width;
+  await page.goto('/de/');
+  await page.evaluate(() => {
+    const word = 'Donaudampfschifffahrtsgesellschaftskapitaensmuetzenabzeichenhalter';
+    document.querySelector('[data-chapter] h2')!.textContent = word;
+    document.querySelector('[data-chapter] .chapter-story')!.textContent = `${word}.example.com/${word}`;
+  });
+  const sw = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(sw).toBeLessThanOrEqual(width);
+});
 
 test('makes no requests to other origins', async ({ page, baseURL }) => {
   const origin = new URL(baseURL!).origin;

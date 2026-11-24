@@ -90,3 +90,19 @@ test.describe('code toy', () => {
     await expect(toy.locator('[data-output]')).toHaveText(new RegExp(` ${second}$`));
   });
 });
+
+test('only the gear driver captures touch, so the page still scrolls over the toy', async ({ page }) => {
+  await page.goto('/en/');
+  const svg = page.locator('[data-toy=gears] svg');
+  expect(await svg.evaluate((el) => getComputedStyle(el).touchAction)).not.toBe('none');
+  const driver = page.locator('[data-toy=gears] [data-gear="0"]');
+  expect(await driver.evaluate((el) => getComputedStyle(el).touchAction)).toBe('none');
+});
+
+test('keyboard focus stays in the breadboard after completing it', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop');
+  await page.goto('/en/');
+  await page.locator('[data-toy=breadboard] button[data-slot="b"]').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('[data-toy=breadboard] .toy-done')).toBeFocused();
+});
