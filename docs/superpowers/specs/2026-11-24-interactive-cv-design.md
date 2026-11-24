@@ -96,7 +96,7 @@ Chapter list:
 | software | `platforms` | Bühler Insights (2018–21): globally distributed team, architecture + development of three Azure microservices. |
 | software | `devops-and-leading` | Convinced management to invest in DevOps (2018) and ran the platform (2019–24). Innovation team: Software Development Lead (2020–24), covering trainings, monthly dev meetings and sales support. |
 | software | `highlights` | Medical-device ultrasound app (2022–23), FDA-approved and used by NASA on the ISS. SPL Sense (2021–24), noise measurement certified by Swiss authorities. Steinemann IoT platform for printing lines (2021–24): architecture, development and project lead. |
-| software | `swiss-life` | Senior Fullstack Developer, since Dec 2024. *Plus the owner's updates since then.* |
+| software | `buehler-today` | Back at Bühler (whose Insights platform the owner helped build 2018–21), now employed directly as **System Architect / Senior Software Engineer**, since early 2025 (exact month: `PLACEHOLDER`). The brief Swiss Life stint (2 months) is left out on purpose. |
 
 **Today:** the tagline "anti-dogmatic .NET / Azure software engineer with a passion for pragmatic and effective solutions" (years of experience are computed from 2015, not hard-coded). Skills grouped as on the CV. Certifications: iSAQB CPSA-F (2020), CPSA-A Requirements for Architects (2023), AZ-204 (2022). Languages: German (native) and English (proficient). Off the keyboard: climbing, photography, coffee.
 - Language: the site detects the browser language on the first visit and defaults to English. The switch is always visible and keeps the reader's position in the story.
