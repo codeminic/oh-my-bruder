@@ -15,6 +15,9 @@ export const ui = {
     writeMe: 'Write me an email',
     backToStory: 'Back to the story',
     privacyTitle: 'Privacy policy',
+    tryIt: 'Try it',
+    toyGearsHint: 'Turn the first gear',
+    toyGearsDone: 'Click. Everything turns together – that is how it started.',
   },
   de: {
     skipToStory: 'Zur Geschichte springen',
@@ -32,6 +35,9 @@ export const ui = {
     writeMe: 'Schreib mir eine E-Mail',
     backToStory: 'Zurück zur Geschichte',
     privacyTitle: 'Datenschutzerklärung',
+    tryIt: 'Probier’s aus',
+    toyGearsHint: 'Dreh am ersten Zahnrad',
+    toyGearsDone: 'Klick. Alles dreht sich mit – so hat es angefangen.',
   },
 } as const;
 
