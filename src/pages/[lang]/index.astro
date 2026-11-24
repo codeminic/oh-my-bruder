@@ -28,3 +28,8 @@ const tagline = localize(profile.tagline, lang).replace('{years}', String(years)
     <ContactSection profile={profile} lang={lang} years={years} />
   </main>
 </BaseLayout>
+
+<script>
+  import { startScrollStory } from '../../scripts/scrollStory';
+  startScrollStory();
+</script>

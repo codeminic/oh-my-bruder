@@ -1,0 +1,55 @@
+---
+import { seeded } from '../rand';
+
+const rnd = seeded(42);
+// Manhattan-routed copper traces running down the board, mostly near the edges.
+const traces = Array.from({ length: 18 }, (_, i) => {
+  const left = i % 2 === 0;
+  let x = left ? 30 + rnd() * 140 : 830 + rnd() * 140;
+  let y = rnd() * 300;
+  let d = `M${x.toFixed(0)},${y.toFixed(0)}`;
+  const steps = 5 + Math.floor(rnd() * 5);
+  for (let s = 0; s < steps; s++) {
+    if (s % 2 === 0) y += 120 + rnd() * 260;
+    else x = Math.min(990, Math.max(10, x + (rnd() - 0.5) * 160));
+    d += ` L${x.toFixed(0)},${Math.min(y, 1990).toFixed(0)}`;
+  }
+  return { d, end: { x, y: Math.min(y, 1990) } };
+});
+const chips = [
+  { x: 60, y: 600, w: 120, h: 70, pins: 6 },
+  { x: 840, y: 1250, w: 110, h: 60, pins: 5 },
+  { x: 70, y: 1650, w: 90, h: 50, pins: 4 },
+];
+---
+
+<svg class="world world-electronics" viewBox="0 0 1000 2000" preserveAspectRatio="xMidYMid slice" focusable="false">
+  <defs>
+    <pattern id="pcb-grid" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M25 0H0V25" fill="none" stroke="rgb(255 255 255 / 0.04)"></path>
+    </pattern>
+  </defs>
+  <rect width="1000" height="2000" fill="url(#pcb-grid)"></rect>
+  {
+    traces.map((t) => (
+      <g>
+        <path class="pcb-trace" d={t.d} pathLength="1" fill="none" stroke="#c8a24a" stroke-width="6" stroke-linejoin="round" />
+        <circle class="pcb-via" cx={t.end.x} cy={t.end.y} r="9" fill="#0b5d3b" stroke="#c8a24a" stroke-width="5" />
+      </g>
+    ))
+  }
+  {
+    chips.map((c) => (
+      <g transform={`translate(${c.x} ${c.y})`}>
+        {Array.from({ length: c.pins }, (_, i) => (
+          <>
+            <rect x={10 + i * ((c.w - 20) / (c.pins - 1)) - 3} y={-10} width="6" height="12" fill="#c0c0c0" />
+            <rect x={10 + i * ((c.w - 20) / (c.pins - 1)) - 3} y={c.h - 2} width="6" height="12" fill="#c0c0c0" />
+          </>
+        ))}
+        <rect width={c.w} height={c.h} rx="4" fill="#1b1b1b" />
+        <circle cx="12" cy="12" r="4" fill="#333" />
+      </g>
+    ))
+  }
+</svg>

@@ -1,0 +1,130 @@
+/* ---------- era palettes ---------- */
+[data-era='lego'] {
+  --era-bg: #f4c20d;
+  --era-fg: #1b1b1b;
+  --era-accent: #d01012;
+  --era-card: rgb(255 255 255 / 0.92);
+}
+[data-era='electronics'] {
+  --era-bg: #0b5d3b;
+  --era-fg: #e6f7ee;
+  --era-accent: #e3bd5b;
+  --era-card: rgb(5 38 24 / 0.9);
+}
+[data-era='software'] {
+  --era-bg: #0f1115;
+  --era-fg: #d6deeb;
+  --era-accent: #7fdbca;
+  --era-card: rgb(22 25 32 / 0.92);
+}
+[data-era='today'] {
+  --era-bg: #161a21;
+  --era-fg: #e8eaed;
+  --era-accent: #7fdbca;
+  --era-card: transparent;
+}
+
+.hero,
+.era,
+.today {
+  background: var(--era-bg);
+  color: var(--era-fg);
+  transition: background-color 0.3s;
+}
+.era-label,
+.chapter-years {
+  color: var(--era-accent);
+}
+[data-era='lego'] .era-label,
+[data-era='lego'] .chapter-years {
+  color: #a00d0f;
+}
+.chapter {
+  background: var(--era-card);
+  color: var(--era-fg);
+}
+[data-era='lego'] .chapter {
+  box-shadow: 0 6px 0 #c49a0a;
+}
+[data-era='electronics'] .chapter {
+  border: 1px solid rgb(200 162 74 / 0.5);
+}
+[data-era='software'] .chapter {
+  font-family: var(--font-body);
+  border: 1px solid #2f3542;
+}
+[data-era='software'] .chapter h2::before {
+  content: '> ';
+  color: var(--era-accent);
+  font-family: var(--font-mono);
+}
+.contact-mail {
+  color: var(--era-accent);
+}
+
+/* With the sky layer active (JS), sections go transparent so one colour can morph between eras. */
+html.has-sky .hero,
+html.has-sky .era,
+html.has-sky .today {
+  background: transparent;
+}
+#world-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background: #f4c20d;
+  pointer-events: none;
+}
+
+/* ---------- worlds ---------- */
+.world {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.world-software {
+  overflow: hidden;
+}
+.code-rain {
+  margin: 0;
+  padding: 2rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.9;
+  color: rgb(214 222 235 / 0.09);
+  white-space: pre;
+}
+.typing-line {
+  position: absolute;
+  left: 1rem;
+  bottom: 2rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  color: var(--era-accent);
+  opacity: 0.6;
+}
+.caret {
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+#era-electronics.is-lit .pcb-trace {
+  stroke: #ffd96b;
+  filter: drop-shadow(0 0 6px #ffd96b);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    animation: none;
+  }
+  .hero,
+  .era,
+  .today {
+    transition: none;
+  }
+}

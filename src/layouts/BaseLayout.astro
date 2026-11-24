@@ -2,6 +2,7 @@
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
+import '../styles/eras.css';
 import { localizedPath, LANGS, type Lang } from '../i18n/lang';
 import { loadProfile } from '../lib/content';
 import LangSwitch from '../components/LangSwitch.astro';
@@ -28,6 +29,14 @@ const profile = await loadProfile();
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {LANGS.map((l) => <link rel="alternate" hreflang={l} href={localizedPath(l, path)} />)}
+    <script is:inline>
+      // Mirrors getMotionMode() in src/lib/motion.ts; runs before first paint so CSS can rely on it.
+      (function () {
+        var d = document.documentElement;
+        var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        d.dataset.motion = reduced ? 'reduced' : innerWidth <= 767 ? 'simple' : 'full';
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body>

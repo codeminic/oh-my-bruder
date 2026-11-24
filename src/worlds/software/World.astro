@@ -1,0 +1,27 @@
+---
+const lines = [
+  'public sealed record Builder(string Name);',
+  'var me = new Builder("Dominic");',
+  'await platform.DeployAsync(ct);',
+  'services.AddAzureClients(b => b.AddServiceBusClient(cs));',
+  '// pragmatic > dogmatic',
+  'app.MapGet("/health", () => Results.Ok());',
+  'const sensors = await iotHub.query(deviceId);',
+  'git commit -m "ship it"',
+  'docker compose up -d',
+  'expect(result).toBe(expected);',
+  'SELECT time_bucket(\'1h\', ts), avg(temp) FROM readings',
+  'Assert.Equal(42, answer);',
+];
+---
+
+<div class="world world-software">
+  <pre class="code-rain">{
+    Array.from({ length: 6 }, (_, block) =>
+      lines
+        .map((l, i) => `${String(block * lines.length + i + 1).padStart(3, ' ')}  ${l}`)
+        .join('\n'),
+    ).join('\n')
+  }</pre>
+  <p class="typing-line"><span class="typing-text">while (curious) build();</span><span class="caret">▍</span></p>
+</div>

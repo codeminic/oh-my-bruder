@@ -1,0 +1,16 @@
+---
+import type { EraId } from '../lib/story';
+import Lego from '../worlds/lego/World.astro';
+import Electronics from '../worlds/electronics/World.astro';
+import Software from '../worlds/software/World.astro';
+
+interface Props {
+  era: EraId;
+}
+
+const { era } = Astro.props;
+---
+
+{era === 'lego' && <Lego />}
+{era === 'electronics' && <Electronics />}
+{era === 'software' && <Software />}

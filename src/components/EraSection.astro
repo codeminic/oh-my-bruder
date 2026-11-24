@@ -3,6 +3,7 @@ import type { ImageMetadata } from 'astro';
 import type { StoryEra } from '../lib/story';
 import type { Lang } from '../i18n/lang';
 import Chapter from './Chapter.astro';
+import EraWorld from './EraWorld.astro';
 
 interface Props {
   era: StoryEra<ImageMetadata>;
@@ -13,7 +14,7 @@ const { era, lang } = Astro.props;
 ---
 
 <section class="era" data-era={era.id} id={`era-${era.id}`} aria-labelledby={`era-${era.id}-title`}>
-  <div class="era-world" aria-hidden="true"><slot name="world" /></div>
+  <div class="era-world" aria-hidden="true"><EraWorld era={era.id} /></div>
   <div class="era-inner">
     <p class="era-label" id={`era-${era.id}-title`}>{era.title}</p>
     {era.chapters.map((c) => <Chapter chapter={c} era={era.id} lang={lang} />)}

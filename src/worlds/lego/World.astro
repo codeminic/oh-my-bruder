@@ -1,0 +1,71 @@
+---
+import { seeded } from '../rand';
+
+const rnd = seeded(7);
+const colors = ['#d01012', '#0055bf', '#237841', '#ffffff', '#1b1b1b', '#fe8a18'];
+// Bricks hug the left and right edges so the middle stays calm behind the text.
+const bricks = Array.from({ length: 34 }, (_, i) => {
+  const left = i % 2 === 0;
+  const studs = [1, 2, 2, 3, 4][Math.floor(rnd() * 5)];
+  return {
+    x: left ? rnd() * 160 - 20 : 840 + rnd() * 160,
+    y: rnd() * 1960,
+    studs,
+    color: colors[Math.floor(rnd() * colors.length)],
+    rot: [0, 0, 90, -8, 8][Math.floor(rnd() * 5)],
+  };
+});
+const gears = [
+  { x: 120, y: 520, r: 70, teeth: 16 },
+  { x: 880, y: 1150, r: 90, teeth: 20 },
+  { x: 90, y: 1700, r: 55, teeth: 12 },
+];
+function gearPath(r: number, teeth: number) {
+  const pts: string[] = [];
+  for (let i = 0; i < teeth * 2; i++) {
+    const a = (Math.PI * i) / teeth;
+    const rr = i % 2 === 0 ? r : r * 0.82;
+    const a2 = a + Math.PI / teeth;
+    pts.push(`${(Math.cos(a) * rr).toFixed(1)},${(Math.sin(a) * rr).toFixed(1)}`);
+    pts.push(`${(Math.cos(a2) * rr).toFixed(1)},${(Math.sin(a2) * rr).toFixed(1)}`);
+  }
+  return `M${pts.join('L')}Z`;
+}
+---
+
+<svg class="world world-lego" viewBox="0 0 1000 2000" preserveAspectRatio="xMidYMid slice" focusable="false">
+  <defs>
+    <pattern id="lego-studs" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="9" fill="rgb(0 0 0 / 0.06)"></circle>
+    </pattern>
+  </defs>
+  <rect width="1000" height="2000" fill="url(#lego-studs)"></rect>
+  {
+    gears.map((g) => (
+      <g class="lego-gear" transform={`translate(${g.x} ${g.y})`}>
+        <path d={gearPath(g.r, g.teeth)} fill="#8a8d91" />
+        <circle r={g.r * 0.3} fill="#5b5e62" />
+        <path d={`M${-g.r * 0.12},${-g.r * 0.04}h${g.r * 0.24}v${g.r * 0.08}h${-g.r * 0.24}z`} fill="#2a2a2a" />
+      </g>
+    ))
+  }
+  {
+    bricks.map((b) => (
+      <g class="lego-brick" transform={`translate(${b.x.toFixed(0)} ${b.y.toFixed(0)}) rotate(${b.rot})`}>
+        {Array.from({ length: b.studs }, (_, s) => (
+          <rect x={8 + s * 32} y={-8} width={18} height={10} rx={2} fill={b.color} />
+        ))}
+        <rect width={b.studs * 32} height={38} rx={3} fill={b.color} />
+        <rect y={30} width={b.studs * 32} height={8} rx={2} fill="rgb(0 0 0 / 0.2)" />
+      </g>
+    ))
+  }
+  <!-- A brick-built retro computer for the "first computer" chapter -->
+  <g class="lego-computer" transform="translate(800 1450)">
+    <rect width="170" height="120" rx="6" fill="#d9d4c5"></rect>
+    <rect x="15" y="14" width="140" height="80" rx="4" fill="#1b1b1b"></rect>
+    <text x="25" y="44" fill="#39d353" font-family="monospace" font-size="16">C:\&gt;_</text>
+    <rect x="-10" y="128" width="190" height="34" rx="4" fill="#cfc9b8"></rect>
+    {Array.from({ length: 5 }, (_, i) => <rect x={10 + i * 34} y="120" width="18" height="10" rx="2" fill="#d9d4c5" />)}
+  </g>
+</svg>
