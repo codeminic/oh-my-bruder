@@ -125,4 +125,9 @@ export function startScrollStory(): void {
   });
   document.documentElement.dataset.motion = mode;
   initScrollStory(root, mode);
+  document.addEventListener('cv:toy-complete', (e) => {
+    if ((e as CustomEvent<{ toy: string }>).detail.toy === 'breadboard') {
+      document.getElementById('era-electronics')?.classList.add('is-lit');
+    }
+  });
 }

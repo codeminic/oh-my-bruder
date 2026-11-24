@@ -1,0 +1,204 @@
+---
+import { t, type Lang } from '../../i18n/lang';
+import { SLOTS } from './breadboard';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+// Slot rows in SVG units (board is 200 high), spaced so 28px+ buttons never overlap at 320px. Row b lines up with the LED leg and the return rail.
+const rowY: Record<string, number> = { a: 46, b: 100, c: 154 };
+---
+
+<div class="toy toy-breadboard" data-toy-root="breadboard">
+  <p class="toy-label">{t(lang, 'tryIt')} · <span>{t(lang, 'toyBreadboardHint')}</span></p>
+  <div class="bb">
+    <svg viewBox="0 0 400 200" class="bb-svg" aria-hidden="true">
+      <rect x="4" y="4" width="392" height="192" rx="10" fill="#f1efe9"></rect>
+      <g fill="#cfcac0">
+        {Array.from({ length: 13 }, (_, c) => Array.from({ length: 5 }, (_, r) => <rect x={92 + c * 22} y={58 + r * 22} width="6" height="6" rx="1" />))}
+      </g>
+      <!-- battery -->
+      <rect x="24" y="60" width="40" height="80" rx="6" fill="#1b1b1b"></rect>
+      <rect x="36" y="52" width="16" height="10" rx="2" fill="#c0c0c0"></rect>
+      <text x="44" y="96" fill="#fff" font-size="14" text-anchor="middle" font-family="monospace">9V</text>
+      <!-- wiring: + to resistor to LED to the gap; rail back to - -->
+      <path d="M44 52 V30 H120" fill="none" stroke="#d01012" stroke-width="4"></path>
+      <rect x="120" y="22" width="56" height="16" rx="8" fill="#d8b98a"></rect>
+      <rect x="132" y="22" width="5" height="16" fill="#8b4513"></rect>
+      <rect x="144" y="22" width="5" height="16" fill="#1b1b1b"></rect>
+      <rect x="156" y="22" width="5" height="16" fill="#e2b007"></rect>
+      <path d="M176 30 H236 V70" fill="none" stroke="#555" stroke-width="4"></path>
+      <g data-led data-on="false" class="bb-led">
+        <circle class="bb-led-glow" cx="236" cy="82" r="26" fill="#ff3b3b" opacity="0"></circle>
+        <path d="M222 92 V78 a14 14 0 0 1 28 0 V92 Z" fill="#a31919" class="bb-led-body"></path>
+      </g>
+      <path d="M236 92 V100 H288" fill="none" stroke="#555" stroke-width="4"></path>
+      <path d="M352 100 H372 V176 H44 V140" fill="none" stroke="#1b1b1b" stroke-width="4"></path>
+      {SLOTS.map((s) => <circle cx="288" cy={rowY[s]} r="5" fill="#8a857a" />)}
+      {SLOTS.map((s) => <circle cx="352" cy={rowY[s]} r="5" fill="#8a857a" />)}
+      <!-- the jumper: drawn where data-at says -->
+      <g data-wire data-at="tray" class="bb-wire-svg">
+        <path d="M0 0 H64" stroke="#fe8a18" stroke-width="8" stroke-linecap="round"></path>
+      </g>
+    </svg>
+    {
+      SLOTS.map((s) => (
+        <button
+          type="button"
+          class="bb-slot"
+          data-slot={s}
+          style={`top: ${(rowY[s] / 200) * 100}%`}
+          aria-label={`${t(lang, 'toyBreadboardRow')} ${s.toUpperCase()}`}
+        >
+          {s.toUpperCase()}
+        </button>
+      ))
+    }
+    <div class="bb-handle" aria-hidden="true" title={t(lang, 'toyBreadboardWire')}></div>
+  </div>
+  <p class="bb-status" role="status" aria-live="polite"></p>
+  <p class="toy-done">{t(lang, 'toyBreadboardDone')}</p>
+  <template data-msg="wrong">{t(lang, 'toyBreadboardWrong')}</template>
+</div>
+
+<style>
+  .bb {
+    position: relative;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .bb-svg {
+    display: block;
+    width: 100%;
+  }
+  .bb-slot {
+    position: absolute;
+    left: 80%;
+    width: clamp(28px, 9vw, 44px);
+    height: clamp(28px, 9vw, 44px);
+    transform: translate(-50%, -50%);
+    border: 2px dashed rgb(0 0 0 / 0.35);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.35);
+    color: #1b1b1b;
+    font: 700 0.75rem var(--font-mono);
+    cursor: pointer;
+  }
+  .bb-slot:hover {
+    background: rgb(254 138 24 / 0.35);
+  }
+  .bb-wire-svg {
+    transition: transform 0.25s;
+  }
+  .bb-wire-svg[data-at='tray'] {
+    transform: translate(168px, 190px);
+  }
+  .bb-wire-svg[data-at='a'] {
+    transform: translate(288px, 46px);
+  }
+  .bb-wire-svg[data-at='b'] {
+    transform: translate(288px, 100px);
+  }
+  .bb-wire-svg[data-at='c'] {
+    transform: translate(288px, 154px);
+  }
+  .bb-handle {
+    position: absolute;
+    left: 42%;
+    top: 95%;
+    width: 72px;
+    height: 32px;
+    transform: translate(-10%, -50%);
+    cursor: grab;
+    touch-action: none;
+  }
+  [data-complete='true'] .bb-handle {
+    display: none;
+  }
+  .bb-led[data-on='true'] .bb-led-body {
+    fill: #ff4d4d;
+  }
+  .bb-led[data-on='true'] .bb-led-glow {
+    opacity: 0.45;
+  }
+  .bb-status {
+    min-height: 1.6em;
+    margin: 0.5rem 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bb-wire-svg {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { Draggable } from 'gsap/Draggable';
+  import { initialBoard, placeWire, SLOTS, type SlotId } from './breadboard';
+
+  gsap.registerPlugin(Draggable);
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-toy-root="breadboard"]')) {
+    const slot = root.closest<HTMLElement>('[data-toy]') ?? root;
+    const wire = root.querySelector<SVGGElement>('[data-wire]')!;
+    const led = root.querySelector<SVGGElement>('[data-led]')!;
+    const status = root.querySelector<HTMLElement>('.bb-status')!;
+    const wrongMsg = root.querySelector<HTMLTemplateElement>('template[data-msg="wrong"]')!.innerHTML;
+    const handle = root.querySelector<HTMLElement>('.bb-handle')!;
+    const buttons = new Map<SlotId, HTMLButtonElement>(
+      SLOTS.map((s) => [s, root.querySelector<HTMLButtonElement>(`button[data-slot="${s}"]`)!]),
+    );
+    let state = initialBoard();
+
+    const place = (target: SlotId) => {
+      const { state: next, result } = placeWire(state, target);
+      state = next;
+      if (result === 'already-closed') return;
+      if (result === 'wrong') {
+        status.textContent = wrongMsg;
+        wire.dataset.at = 'tray';
+        return;
+      }
+      wire.dataset.at = target;
+      status.textContent = '';
+      led.dataset.on = 'true';
+      slot.dataset.complete = 'true';
+      buttons.forEach((b) => (b.disabled = true));
+      document.dispatchEvent(new CustomEvent('cv:toy-complete', { detail: { toy: 'breadboard' } }));
+    };
+
+    buttons.forEach((button, id) => button.addEventListener('click', () => place(id)));
+
+    // Drag the jumper from the tray and drop it near a row.
+    Draggable.create(handle, {
+      type: 'x,y',
+      onDrag(this: Draggable) {
+        const r = handle.getBoundingClientRect();
+        const board = root.querySelector('.bb')!.getBoundingClientRect();
+        const sx = 400 / board.width;
+        wire.style.transform = `translate(${(r.left - board.left) * sx}px, ${(r.top + r.height / 2 - board.top) * sx}px)`;
+      },
+      onRelease(this: Draggable) {
+        const r = handle.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        let best: SlotId | null = null;
+        let bestDist = 60;
+        buttons.forEach((b, id) => {
+          const br = b.getBoundingClientRect();
+          const d = Math.hypot(br.left + br.width / 2 - cx, br.top + br.height / 2 - cy);
+          if (d < bestDist) {
+            best = id;
+            bestDist = d;
+          }
+        });
+        wire.style.transform = '';
+        gsap.set(handle, { x: 0, y: 0 });
+        if (best) place(best);
+      },
+    });
+  }
+</script>

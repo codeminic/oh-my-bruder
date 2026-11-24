@@ -5,6 +5,7 @@ import type { Lang } from '../i18n/lang';
 import Chapter from './Chapter.astro';
 import EraWorld from './EraWorld.astro';
 import GearTrain from '../toys/gears/GearTrain.astro';
+import Breadboard from '../toys/breadboard/Breadboard.astro';
 
 interface Props {
   era: StoryEra<ImageMetadata>;
@@ -21,6 +22,7 @@ const { era, lang } = Astro.props;
     {era.chapters.map((c) => <Chapter chapter={c} era={era.id} lang={lang} />)}
     <div class="toy-slot" data-toy={era.toy}>
       {era.toy === 'gears' && <GearTrain lang={lang} />}
+      {era.toy === 'breadboard' && <Breadboard lang={lang} />}
     </div>
   </div>
 </section>

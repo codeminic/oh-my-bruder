@@ -18,6 +18,11 @@ export const ui = {
     tryIt: 'Try it',
     toyGearsHint: 'Turn the first gear',
     toyGearsDone: 'Click. Everything turns together – that is how it started.',
+    toyBreadboardHint: 'Close the circuit: plug the wire into the right row',
+    toyBreadboardWrong: 'Not quite – that row isn’t connected. Try another one.',
+    toyBreadboardDone: 'The LED lights up – and so does the way forward.',
+    toyBreadboardRow: 'Row',
+    toyBreadboardWire: 'Jumper wire',
   },
   de: {
     skipToStory: 'Zur Geschichte springen',
@@ -38,6 +43,11 @@ export const ui = {
     tryIt: 'Probier’s aus',
     toyGearsHint: 'Dreh am ersten Zahnrad',
     toyGearsDone: 'Klick. Alles dreht sich mit – so hat es angefangen.',
+    toyBreadboardHint: 'Schliess den Stromkreis: steck das Kabel in die richtige Reihe',
+    toyBreadboardWrong: 'Nicht ganz – diese Reihe ist nicht verbunden. Versuch eine andere.',
+    toyBreadboardDone: 'Die LED leuchtet – und zeigt den Weg nach vorn.',
+    toyBreadboardRow: 'Reihe',
+    toyBreadboardWire: 'Steckbrücke',
   },
 } as const;
 

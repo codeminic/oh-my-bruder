@@ -128,3 +128,33 @@ html.has-sky .today {
     transition: none;
   }
 }
+
+/* ---------- toys (shared) ---------- */
+.toy {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background: var(--era-card);
+  color: var(--era-fg);
+}
+.toy-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.toy-label span {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.toy-done {
+  min-height: 1.6em;
+  margin: 0.5rem 0 0;
+  font-weight: 600;
+  visibility: hidden;
+}
+[data-complete='true'] .toy-done {
+  visibility: visible;
+}

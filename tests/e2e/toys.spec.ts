@@ -33,3 +33,28 @@ test.describe('gear train', () => {
     expect(after).not.toBe(before);
   });
 });
+
+test.describe('breadboard', () => {
+  test('a wrong slot explains itself, the right one lights the LED', async ({ page }) => {
+    await page.goto('/en/');
+    const toy = page.locator('[data-toy=breadboard]');
+    await toy.scrollIntoViewIfNeeded();
+    await expect(toy.locator('button[data-slot]')).toHaveCount(3);
+    await toy.locator('button[data-slot="a"]').click();
+    await expect(toy.locator('[role=status]')).toContainText(/not quite|nope|try/i);
+    await expect(toy.locator('[data-wire]')).toHaveAttribute('data-at', 'tray');
+    await toy.locator('button[data-slot="b"]').click();
+    await expect(toy.locator('[data-led]')).toHaveAttribute('data-on', 'true');
+    await expect(page.locator('#era-electronics')).toHaveClass(/is-lit/);
+    await expect(toy.locator('.toy-done')).toBeVisible();
+  });
+
+  test('works with the keyboard', async ({ page }, info) => {
+    test.skip(info.project.name !== 'desktop');
+    await page.goto('/en/');
+    const slot = page.locator('[data-toy=breadboard] button[data-slot="b"]');
+    await slot.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('[data-toy=breadboard] [data-led]')).toHaveAttribute('data-on', 'true');
+  });
+});

@@ -73,25 +73,6 @@ function gearPath(r: number, teeth: number) {
 </div>
 
 <style>
-  .toy {
-    margin-top: 2rem;
-    padding: 1.25rem;
-    border-radius: 0.75rem;
-    background: var(--era-card);
-    color: var(--era-fg);
-  }
-  .toy-label {
-    margin: 0 0 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .toy-label span {
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: 500;
-  }
   .gear-svg {
     display: block;
     width: 100%;
@@ -108,15 +89,6 @@ function gearPath(r: number, teeth: number) {
   .gear-driver:focus-visible path:first-child {
     stroke: #4f9dff;
     stroke-width: 4;
-  }
-  .toy-done {
-    min-height: 1.6em;
-    margin: 0.5rem 0 0;
-    font-weight: 600;
-    visibility: hidden;
-  }
-  :global([data-complete='true']) .toy-done {
-    visibility: visible;
   }
 </style>
 
