@@ -1,0 +1,31 @@
+era: software
+order: 4
+years: 2021 – 2024
+title:
+  en: From printing lines to the space station
+  de: Von der Druckstrasse bis zur Raumstation
+story:
+  en: >-
+    My last years at Solve brought some of my favourite projects: an IoT platform for industrial printing lines
+    that I designed and led, a certified noise-measurement app, and an ultrasound app that NASA now uses on the
+    International Space Station.
+  de: >-
+    Meine letzten Jahre bei Solve brachten einige meiner liebsten Projekte: eine IoT-Plattform für industrielle
+    Druckstrassen, die ich konzipiert und geleitet habe, eine zertifizierte Lärmmess-App und eine Ultraschall-App,
+    die die NASA heute auf der Internationalen Raumstation einsetzt.
+projects:
+  - name: IoT platform (Steinemann)
+    years: 2021 – 2024
+    summary:
+      en: Monitoring for industrial-sized printing lines. I was responsible for architecture, development, project management and operations, supported by two developers.
+      de: Monitoring für industrielle Druckstrassen. Ich verantwortete Architektur, Entwicklung, Projektleitung und Betrieb, unterstützt von zwei Entwicklern.
+  - name: SPL Sense
+    years: 2021 – 2024
+    summary:
+      en: Built with a colleague – a cross-platform app for noise measurements at jobsites and concerts with a high-precision microphone, certified by the Swiss authorities.
+      de: Zusammen mit einem Kollegen entwickelt – eine plattformübergreifende App für Lärmmessungen auf Baustellen und an Konzerten mit einem Präzisionsmikrofon, zertifiziert von den Schweizer Behörden.
+  - name: Ultrasound app for a medical device
+    years: 2022 – 2023
+    summary:
+      en: An FDA-approved app for ultrasound measurements, now used by NASA for studies on the ISS – and one day to keep astronauts healthy on deep-space missions.
+      de: Eine von der FDA zugelassene App für Ultraschallmessungen, die die NASA heute für Studien auf der ISS nutzt – und künftig, um Astronauten auf Deep-Space-Missionen gesund zu halten.

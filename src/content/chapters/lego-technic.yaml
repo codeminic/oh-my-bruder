@@ -1,0 +1,14 @@
+era: lego
+order: 1
+years: "PLACEHOLDER: 199x"
+title:
+  en: "PLACEHOLDER: Lego Technic"
+  de: "PLACEHOLDER: Lego Technic"
+story:
+  en: "PLACEHOLDER: When did Lego Technic start for you? A favourite set or build, and what it taught you about how things fit together."
+  de: "PLACEHOLDER: Wann hat Lego Technic für dich angefangen? Ein Lieblingsset oder -modell und was es dir darüber beigebracht hat, wie Dinge zusammenpassen."
+photos:
+  - src: ./images/placeholder-lego.png
+    alt:
+      en: "PLACEHOLDER: a Lego Technic model"
+      de: "PLACEHOLDER: ein Lego-Technic-Modell"

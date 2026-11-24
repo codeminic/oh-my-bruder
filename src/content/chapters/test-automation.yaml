@@ -1,0 +1,21 @@
+era: electronics
+order: 2
+years: 2013 – 2015
+title:
+  en: First code, no code review
+  de: Erster Code, kein Code-Review
+story:
+  en: >-
+    After the apprenticeship I joined the engineering team and wrote test automation applications for industrial
+    PCs, PLCs and I/O cards. It was a good start in software development – but I was coding on my own, without
+    feedback and without a team to learn from. So I went looking for one.
+  de: >-
+    Nach der Lehre wechselte ich ins Engineering-Team und schrieb Testautomatisierungs-Software für Industrie-PCs,
+    SPS und I/O-Karten. Ein guter Einstieg in die Softwareentwicklung – aber ich programmierte allein, ohne
+    Feedback und ohne Team, von dem ich lernen konnte. Also machte ich mich auf die Suche nach einem.
+facts:
+  role:
+    en: Test automation engineer
+    de: Testautomatisierungs-Ingenieur
+  org: Grossenbacher Systeme AG
+  tech: [IPC, PLC, I/O cards]

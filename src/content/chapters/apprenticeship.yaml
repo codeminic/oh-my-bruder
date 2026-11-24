@@ -1,0 +1,23 @@
+era: electronics
+order: 1
+years: 2009 – 2013
+title:
+  en: Learning how things really work
+  de: Verstehen, wie Dinge wirklich funktionieren
+story:
+  en: >-
+    In 2009 I started my apprenticeship as an electronics engineer at Grossenbacher Systeme AG, with vocational
+    school at GBS St. Gallen. I learned to design, build and repair electronic circuits. In the last two years
+    microcontrollers, PLCs and small desktop applications came along – and in the final year I realised that
+    software was what I wanted to do.
+  de: >-
+    2009 begann ich meine Lehre als Elektroniker bei der Grossenbacher Systeme AG, die Berufsschule besuchte ich
+    an der GBS St. Gallen. Ich lernte, elektronische Schaltungen zu entwickeln, aufzubauen und zu reparieren.
+    In den letzten zwei Jahren kamen Mikrocontroller, SPS und kleine Desktop-Anwendungen dazu – und im letzten
+    Lehrjahr merkte ich: Software ist das, was ich machen will.
+facts:
+  role:
+    en: Electronics engineer apprentice
+    de: Lernender Elektroniker
+  org: Grossenbacher Systeme AG
+  tech: [Circuit design, Microcontrollers, PLC]

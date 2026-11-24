@@ -1,0 +1,53 @@
+name: Dominic Baumgartner
+# Software since the test-automation days; the CV counted 10 years in Dec 2024.
+careerStartYear: 2014
+role:
+  en: System Architect / Senior Software Engineer at Bühler
+  de: System Architect / Senior Software Engineer bei Bühler
+tagline:
+  en: An anti-dogmatic .NET / Azure software engineer with {years} years of experience and a passion for pragmatic and effective solutions.
+  de: Ein undogmatischer .NET-/Azure-Software-Engineer mit {years} Jahren Erfahrung und einer Leidenschaft für pragmatische und wirkungsvolle Lösungen.
+email: dominic@baumgartner.rocks
+skills:
+  - group: { en: Languages, de: Sprachen }
+    items: [C#, TypeScript, JavaScript, Python]
+  - group: { en: Frameworks, de: Frameworks }
+    items: [.NET, ASP.NET Core, Blazor, Entity Framework Core, Angular, Vue.js]
+  - group: { en: Testing & quality, de: Testing & Qualität }
+    items: [xUnit, Moq, k6, SpecFlow, SonarQube]
+  - group: { en: Cloud (Azure), de: Cloud (Azure) }
+    items: [IoT Hub, IoT Edge, Cosmos DB, Service Bus, Functions, App Services, Container Apps, Bicep]
+  - group: { en: Databases, de: Datenbanken }
+    items: [SQL Server, PostgreSQL / Timescale, MongoDB, Redis, InfluxDB, Azure Data Explorer]
+  - group: { en: DevOps & platforms, de: DevOps & Plattformen }
+    items: [GitLab, GitHub, Azure DevOps, Docker, Compose, Proxmox, Debian, Ubuntu]
+  - group: { en: Ways of working, de: Arbeitsweise }
+    items: [Kanban, Scrum, SAFe, DDD, Event Storming]
+certifications:
+  - year: 2023
+    name: iSAQB CPSA Advanced Level – Requirements for Architects
+  - year: 2022
+    name: Microsoft Certified Azure Developer Associate (AZ-204)
+  - year: 2020
+    name: iSAQB CPSA Foundation Level
+languages:
+  - name: { en: German, de: Deutsch }
+    level: { en: Native, de: Muttersprache }
+  - name: { en: English, de: Englisch }
+    level: { en: Proficient, de: Verhandlungssicher }
+interests:
+  - name: { en: Climbing, de: Klettern }
+    text:
+      en: Climbing and bouldering once a week lets me switch off completely for a few hours.
+      de: Einmal pro Woche klettern und bouldern – da kann ich für ein paar Stunden komplett abschalten.
+  - name: { en: Photography, de: Fotografie }
+    text:
+      en: I love capturing small details and unfamiliar perspectives.
+      de: Ich halte gerne kleine Details und ungewohnte Perspektiven fest.
+  - name: { en: Coffee, de: Kaffee }
+    text:
+      en: A barista class showed me coffee can be much more than caffeine – now I play with recipes, roasts and extraction methods.
+      de: Ein Barista-Kurs hat mir gezeigt, dass Kaffee viel mehr sein kann als Koffein – seither spiele ich mit Rezepten, Röstungen und Extraktionsmethoden.
+impressum:
+  name: Dominic Baumgartner
+  email: dominic@baumgartner.rocks

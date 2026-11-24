@@ -1,0 +1,37 @@
+era: software
+order: 1
+years: 2015 – 2019
+title:
+  en: Joining a team – and going back to school
+  de: Endlich im Team – und zurück auf die Schulbank
+story:
+  en: >-
+    In 2015 I joined Solve Engineering, an engineering services provider, as a developer. I worked part-time and
+    studied software engineering at ZbW St. Gallen (Advanced Federal Diploma of Higher Education, HF) – applying
+    what I learned in class to real client projects the next day.
+  de: >-
+    2015 wechselte ich als Entwickler zu Solve Engineering, einem Engineering-Dienstleister. Ich arbeitete Teilzeit
+    und studierte Software Engineering an der ZbW St. Gallen (Dipl. Techniker HF) – was ich abends lernte, konnte
+    ich am nächsten Tag in echten Kundenprojekten anwenden.
+facts:
+  role:
+    en: Software engineer
+    de: Software Engineer
+  org: Solve Engineering GmbH
+  tech: [C#, .NET, ASP.NET Core, Entity Framework Core]
+projects:
+  - name: liberoCloud (Elpro)
+    years: 2015 – 2017
+    summary:
+      en: With a team of ten developers I helped build a cold-chain management platform that traces and analyses temperature-logger data – mostly back end, some front end.
+      de: In einem Team von zehn Entwicklern half ich, eine Cold-Chain-Management-Plattform zu bauen, die Daten von Temperaturloggern verfolgt und auswertet – vor allem Backend, etwas Frontend.
+  - name: Traceability (Thyssen Krupp)
+    years: 2017 – 2020
+    summary:
+      en: Maintained and extended a legacy traceability application – requirements engineering, development and deployment.
+      de: Wartung und Weiterentwicklung einer bestehenden Traceability-Anwendung – Requirements Engineering, Entwicklung und Deployment.
+  - name: WM Quartis driver (Wenzel Group)
+    years: "2017"
+    summary:
+      en: Wrote a C# driver to integrate a 3D measurement arm into the WM Quartis measurement software.
+      de: Ein C#-Treiber, um einen 3D-Messarm in die Messsoftware WM Quartis zu integrieren.

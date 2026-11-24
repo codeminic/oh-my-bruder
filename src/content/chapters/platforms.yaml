@@ -1,0 +1,18 @@
+era: software
+order: 2
+years: 2018 – 2021
+title:
+  en: An IoT platform, built around the globe
+  de: Eine IoT-Plattform, rund um den Globus gebaut
+story:
+  en: >-
+    For Bühler I was part of a globally distributed team building Bühler Insights, the company's IoT and digital
+    services platform. In my Scrum team I was responsible for the architecture and development – front end and
+    back end – of three microservices on Azure.
+  de: >-
+    Für Bühler war ich Teil eines weltweit verteilten Teams, das Bühler Insights aufbaute, die IoT- und
+    Digital-Services-Plattform des Unternehmens. In meinem Scrum-Team verantwortete ich Architektur und
+    Entwicklung – Frontend und Backend – von drei Microservices auf Azure.
+facts:
+  org: Bühler (via Solve Engineering)
+  tech: [Azure, .NET, Microservices, Scrum]

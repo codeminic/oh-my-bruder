@@ -1,0 +1,6 @@
+id: electronics
+order: 2
+title:
+  en: Solder & circuits
+  de: Lötzinn & Schaltungen
+toy: breadboard

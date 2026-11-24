@@ -1,0 +1,24 @@
+era: software
+order: 3
+years: 2018 – 2024
+title:
+  en: Making the whole team better
+  de: Das ganze Team besser machen
+story:
+  en: >-
+    In 2018 I convinced our management to invest in a modern DevOps infrastructure, evaluated the platform and ran
+    it from then on – updates, CI/CD runners, and onboarding people and projects. From 2020 I was the software
+    development lead in Solve's innovation team: coordinating trainings and technology projects, presenting at our
+    monthly developer meetings and helping sales with technical questions.
+  de: >-
+    2018 überzeugte ich unsere Geschäftsleitung, in eine moderne DevOps-Infrastruktur zu investieren, evaluierte die
+    Plattform und betrieb sie von da an – Updates, CI/CD-Runner und das Onboarding von Leuten und Projekten. Ab 2020
+    war ich Software Development Lead im Innovationsteam von Solve: Ich koordinierte Weiterbildungen und
+    Technologieprojekte, präsentierte an unseren monatlichen Entwickler-Meetings und unterstützte den Verkauf bei
+    technischen Fragen.
+facts:
+  role:
+    en: Software development lead, DevOps platform owner
+    de: Software Development Lead, Verantwortlicher DevOps-Plattform
+  org: Solve Engineering GmbH
+  tech: [GitLab, Azure DevOps, Docker, Proxmox]
