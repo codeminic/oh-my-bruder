@@ -1,0 +1,149 @@
+---
+import { t, type Lang } from '../../i18n/lang';
+import { CODE_MAX_LEN, formatOutput } from './codeToy';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const prefix = t(lang, 'toyCodeOutputPrefix');
+const fallback = t(lang, 'toyCodeFallback');
+const choices = t(lang, 'toyCodeChoices').split('|');
+const inputId = `code-toy-input-${lang}`;
+---
+
+<div class="toy toy-code" data-toy-root="code" data-prefix={prefix} data-fallback={fallback}>
+  <p class="toy-label">{t(lang, 'tryIt')} · <span>{t(lang, 'toyCodeHint')}</span></p>
+  <pre class="code-snippet"><code><span class="kw">function</span> <span class="fn">build</span>(thing) {'{'}
+  <span class="kw">return</span> <span class="str">`{prefix} ${'{'}thing{'}'}`</span>;
+{'}'}
+
+<span class="fn">build</span>(<span class="str">"</span><label class="code-input-wrap" for={inputId}><span class="visually-hidden">{t(lang, 'toyCodeHint')}</span><input
+        id={inputId}
+        class="code-input"
+        type="text"
+        maxlength={CODE_MAX_LEN}
+        placeholder={fallback}
+        autocomplete="off"
+        spellcheck="false"
+      /></label><span class="code-choice-shown" data-shown aria-hidden="true">{fallback}</span><span class="str">"</span>);</code></pre>
+  <div class="code-choices">
+    {
+      choices.map((c) => (
+        <button type="button" data-choice={c}>
+          {c}
+        </button>
+      ))
+    }
+  </div>
+  <p class="code-output">
+    <span class="code-prompt" aria-hidden="true">›</span>
+    <span class="visually-hidden">{t(lang, 'toyCodeOutputLabel')}: </span>
+    <output data-output aria-live="polite">{formatOutput(prefix, fallback)}</output>
+  </p>
+</div>
+
+<style>
+  .code-snippet {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: #0b0d11;
+    color: #d6deeb;
+    font: 0.9rem/1.7 var(--font-mono);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .kw {
+    color: #c792ea;
+  }
+  .fn {
+    color: #82aaff;
+  }
+  .str {
+    color: #ecc48d;
+  }
+  .code-input {
+    width: 13ch;
+    padding: 0 0.25rem;
+    border: none;
+    border-bottom: 2px solid var(--era-accent);
+    background: rgb(127 219 202 / 0.08);
+    color: #ecc48d;
+    font: inherit;
+  }
+  .code-input:focus {
+    outline: 2px solid #4f9dff;
+  }
+  .code-choice-shown {
+    display: none;
+    color: #ecc48d;
+  }
+  .code-choices {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  .code-choices button {
+    min-height: 44px;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--era-accent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--era-fg);
+    font: 600 0.85rem var(--font-mono);
+    cursor: pointer;
+  }
+  .code-choices button[aria-pressed='true'] {
+    background: var(--era-accent);
+    color: #0f1115;
+  }
+  .code-output {
+    margin: 0.75rem 0 0;
+    font: 1.05rem var(--font-mono);
+    color: var(--era-accent);
+  }
+  /* Phones: no keyboard needed – tap a choice instead. */
+  @media (max-width: 767px) {
+    .code-input-wrap {
+      display: none;
+    }
+    .code-choice-shown {
+      display: inline;
+    }
+    .code-choices {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  import { formatOutput, normalizeInput } from './codeToy';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-toy-root="code"]')) {
+    const prefix = root.dataset.prefix!;
+    const fallback = root.dataset.fallback!;
+    const output = root.querySelector<HTMLOutputElement>('[data-output]')!;
+    const shown = root.querySelector<HTMLElement>('[data-shown]')!;
+    const input = root.querySelector<HTMLInputElement>('.code-input')!;
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('button[data-choice]')];
+
+    const show = (raw: string) => {
+      const value = normalizeInput(raw, fallback);
+      output.textContent = formatOutput(prefix, value); // textContent: input is never parsed as HTML
+      shown.textContent = value;
+    };
+
+    input.addEventListener('input', () => show(input.value));
+    buttons.forEach((b) => {
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => {
+        buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        input.value = b.dataset.choice!;
+        show(b.dataset.choice!);
+      });
+    });
+  }
+</script>

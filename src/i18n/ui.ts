@@ -23,6 +23,11 @@ export const ui = {
     toyBreadboardDone: 'The LED lights up – and so does the way forward.',
     toyBreadboardRow: 'Row',
     toyBreadboardWire: 'Jumper wire',
+    toyCodeHint: 'Change what gets built',
+    toyCodeOutputPrefix: 'Building',
+    toyCodeFallback: 'things',
+    toyCodeChoices: 'robots|IoT platforms|good coffee',
+    toyCodeOutputLabel: 'Output',
   },
   de: {
     skipToStory: 'Zur Geschichte springen',
@@ -48,6 +53,11 @@ export const ui = {
     toyBreadboardDone: 'Die LED leuchtet – und zeigt den Weg nach vorn.',
     toyBreadboardRow: 'Reihe',
     toyBreadboardWire: 'Steckbrücke',
+    toyCodeHint: 'Ändere, was gebaut wird',
+    toyCodeOutputPrefix: 'Baue',
+    toyCodeFallback: 'Dinge',
+    toyCodeChoices: 'Roboter|IoT-Plattformen|guten Kaffee',
+    toyCodeOutputLabel: 'Ausgabe',
   },
 } as const;
 

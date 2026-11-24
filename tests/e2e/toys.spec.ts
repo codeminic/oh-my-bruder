@@ -58,3 +58,35 @@ test.describe('breadboard', () => {
     await expect(page.locator('[data-toy=breadboard] [data-led]')).toHaveAttribute('data-on', 'true');
   });
 });
+
+test.describe('code toy', () => {
+  test('typing changes the output, safely', async ({ page }, info) => {
+    test.skip(info.project.name !== 'desktop');
+    await page.goto('/en/');
+    const toy = page.locator('[data-toy=code]');
+    const input = toy.getByRole('textbox');
+    await expect(input).toHaveAttribute('maxlength', '24');
+    const output = toy.locator('[data-output]');
+    await input.fill('robots');
+    await expect(output).toHaveText(/ robots$/);
+    await input.fill('<b>x</b>');
+    await expect(output.locator('b')).toHaveCount(0);
+    await expect(output).toContainText('<b>x</b>');
+    await input.fill('');
+    await expect(output).not.toHaveText(/ $/);
+    await expect(toy.locator('.code-snippet')).toContainText('build(');
+  });
+
+  test('phones get tappable choices instead of typing', async ({ page }, info) => {
+    test.skip(info.project.name === 'desktop');
+    await page.goto('/en/');
+    const toy = page.locator('[data-toy=code]');
+    await toy.scrollIntoViewIfNeeded();
+    await expect(toy.getByRole('textbox')).toBeHidden();
+    const choices = toy.locator('button[data-choice]');
+    await expect(choices).toHaveCount(3);
+    const second = (await choices.nth(1).textContent())!.trim();
+    await choices.nth(1).click();
+    await expect(toy.locator('[data-output]')).toHaveText(new RegExp(` ${second}$`));
+  });
+});
