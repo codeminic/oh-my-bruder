@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LANGS, localizedPath, t, type Lang } from '../../i18n/lang';
+import { loadProfile } from '../../lib/content';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const { impressum } = await loadProfile();
+---
+
+<BaseLayout lang={lang} title={`${t(lang, 'privacyTitle')} – ${impressum.name}`} path="privacy">
+  <main class="legal">
+    <p><a href={localizedPath(lang)}>← {t(lang, 'backToStory')}</a></p>
+    <h1>{t(lang, 'privacyTitle')}</h1>
+    {
+      lang === 'de' ? (
+        <>
+          <p>Verantwortlich: {impressum.name}, <a href={`mailto:${impressum.email}`}>{impressum.email}</a>.</p>
+          <p>
+            Diese Website verwendet keine Cookies, kein Tracking und keine Analyse-Tools. Schriften und alle anderen
+            Dateien werden von dieser Website selbst ausgeliefert, es werden keine Inhalte von Drittanbietern geladen.
+          </p>
+          <p>
+            Die einzige gespeicherte Information ist deine Sprachwahl, lokal in deinem Browser (localStorage). Sie
+            verlässt dein Gerät nie.
+          </p>
+          <p>
+            Server-Logs: PLACEHOLDER: Beim Hosting-Anbieter können technische Zugriffsdaten (z. B. IP-Adresse, Zeitpunkt)
+            anfallen – Anbieter und Aufbewahrungsdauer ergänzen.
+          </p>
+          <p>Fragen zum Datenschutz? Schreib mir eine E-Mail.</p>
+        </>
+      ) : (
+        <>
+          <p>Responsible: {impressum.name}, <a href={`mailto:${impressum.email}`}>{impressum.email}</a>.</p>
+          <p>
+            This website uses no cookies, no tracking and no analytics. Fonts and all other files are served by this
+            website itself; no third-party content is loaded.
+          </p>
+          <p>
+            The only thing stored is your language choice, locally in your browser (localStorage). It never leaves your
+            device.
+          </p>
+          <p>
+            Server logs: PLACEHOLDER: the hosting provider may record technical access data (e.g. IP address, time) –
+            add the provider and retention period.
+          </p>
+          <p>Questions about privacy? Send me an email.</p>
+        </>
+      )
+    }
+  </main>
+</BaseLayout>

@@ -1,14 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EraSection from '../../components/EraSection.astro';
+import ContactSection from '../../components/ContactSection.astro';
 import { LANGS, type Lang } from '../../i18n/lang';
+import { loadProfile, loadStory } from '../../lib/content';
+import { localize, yearsOfExperience } from '../../lib/story';
 
 export function getStaticPaths() {
   return LANGS.map((lang) => ({ params: { lang } }));
 }
 
 const lang = Astro.params.lang as Lang;
+const story = await loadStory(lang);
+const profile = await loadProfile();
+const years = yearsOfExperience(profile.careerStartYear, new Date());
+const tagline = localize(profile.tagline, lang).replace('{years}', String(years));
 ---
 
-<BaseLayout lang={lang} title="Dominic Baumgartner">
-  <h1>Dominic Baumgartner</h1>
+<BaseLayout lang={lang} title={`${profile.name} – ${localize(profile.role, lang)}`} description={tagline}>
+  <main>
+    <header class="hero" data-era="lego">
+      <h1>{profile.name}</h1>
+      <p class="hero-role">{localize(profile.role, lang)}</p>
+      <p class="hero-scroll" aria-hidden="true">↓</p>
+    </header>
+    {story.map((era) => <EraSection era={era} lang={lang} />)}
+    <ContactSection profile={profile} lang={lang} years={years} />
+  </main>
 </BaseLayout>

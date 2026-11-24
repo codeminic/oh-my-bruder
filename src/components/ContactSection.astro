@@ -1,0 +1,76 @@
+---
+import { localize } from '../lib/story';
+import { t, type Lang } from '../i18n/lang';
+import type { Profile } from '../lib/content';
+
+interface Props {
+  profile: Profile;
+  lang: Lang;
+  years: number;
+}
+
+const { profile, lang, years } = Astro.props;
+const L = (v: { en: string; de?: string }) => localize(v, lang);
+---
+
+<section id="contact" class="today" data-era="today" aria-labelledby="today-title">
+  <div class="era-inner">
+    <p class="era-label">{t(lang, 'today')}</p>
+    <h2 id="today-title">{L(profile.role)}</h2>
+    <p class="today-tagline">{L(profile.tagline).replace('{years}', String(years))}</p>
+
+    <div class="today-grid">
+      <div>
+        <h3>{t(lang, 'skills')}</h3>
+        <dl class="skills">
+          {
+            profile.skills.map((s) => (
+              <>
+                <dt>{L(s.group)}</dt>
+                <dd>{s.items.join(' · ')}</dd>
+              </>
+            ))
+          }
+        </dl>
+      </div>
+      <div>
+        <h3>{t(lang, 'certifications')}</h3>
+        <ul class="plain">
+          {
+            profile.certifications.map((c) => (
+              <li>
+                <span class="muted">{c.year}</span> {c.name}
+              </li>
+            ))
+          }
+        </ul>
+        <h3>{t(lang, 'languages')}</h3>
+        <ul class="plain">
+          {
+            profile.languages.map((l) => (
+              <li>
+                {L(l.name)} <span class="muted">· {L(l.level)}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <h3>{t(lang, 'offKeyboard')}</h3>
+    <ul class="interests">
+      {
+        profile.interests.map((i) => (
+          <li>
+            <strong>{L(i.name)}</strong>
+            <p>{L(i.text)}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="contact-cta">
+      <a class="contact-mail" href={`mailto:${profile.email}`}>{t(lang, 'writeMe')} → {profile.email}</a>
+    </p>
+  </div>
+</section>

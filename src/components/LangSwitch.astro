@@ -1,0 +1,20 @@
+---
+import { localizedPath, otherLang, t, type Lang } from '../i18n/lang';
+
+interface Props {
+  lang: Lang;
+  path?: string;
+}
+
+const { lang, path = '' } = Astro.props;
+const target = otherLang(lang);
+---
+
+<a class="lang-switch" href={localizedPath(target, path)} hreflang={target} lang={target} aria-label={t(lang, 'switchLanguageLabel')}>
+  {t(lang, 'switchLanguage')}
+</a>
+
+<script>
+  import { initLangSwitch } from '../scripts/langSwitch';
+  initLangSwitch();
+</script>

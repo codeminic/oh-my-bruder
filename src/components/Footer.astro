@@ -1,0 +1,18 @@
+---
+import { localizedPath, t, type Lang } from '../i18n/lang';
+
+interface Props {
+  lang: Lang;
+  name: string;
+}
+
+const { lang, name } = Astro.props;
+---
+
+<footer class="site-footer">
+  <span>© {new Date().getFullYear()} {name}</span>
+  <nav>
+    <a href={localizedPath(lang, 'impressum')}>{t(lang, 'impressum')}</a>
+    <a href={localizedPath(lang, 'privacy')}>{t(lang, 'privacy')}</a>
+  </nav>
+</footer>

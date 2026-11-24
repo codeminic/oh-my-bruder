@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 4321;
+const PORT = 4399;
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -8,9 +8,9 @@ export default defineConfig({
   reporter: [['list']],
   use: { baseURL: `http://localhost:${PORT}` },
   webServer: {
-    command: `npm run build && npm run preview -- --port ${PORT}`,
+    command: `npm run build && npm run preview -- --port ${PORT} --ignore-lock`,
     url: `http://localhost:${PORT}/en/`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 180_000,
   },
   projects: [

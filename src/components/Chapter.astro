@@ -1,0 +1,62 @@
+---
+import type { ImageMetadata } from 'astro';
+import type { StoryChapter } from '../lib/story';
+import { t, type Lang } from '../i18n/lang';
+import Snapshot from './Snapshot.astro';
+
+interface Props {
+  chapter: StoryChapter<ImageMetadata>;
+  era: string;
+  lang: Lang;
+}
+
+const { chapter, era, lang } = Astro.props;
+---
+
+<article class="chapter" id={chapter.anchor} data-chapter lang={chapter.fallback && lang !== 'en' ? 'en' : undefined}>
+  <p class="chapter-years">{chapter.years}</p>
+  <h2>{chapter.title}</h2>
+  {
+    chapter.facts && (chapter.facts.role || chapter.facts.org) && (
+      <p class="chapter-role">{[chapter.facts.role, chapter.facts.org].filter(Boolean).join(' · ')}</p>
+    )
+  }
+  <p class="chapter-story">{chapter.story}</p>
+  {chapter.photos.map((p) => <Snapshot src={p.src} alt={p.alt} era={era} />)}
+  {
+    chapter.projects.length > 0 && (
+      <div class="chapter-projects">
+        <h3>{t(lang, 'projects')}</h3>
+        <ul>
+          {chapter.projects.map((p) => (
+            <li>
+              <strong>{p.url ? <a href={p.url}>{p.name}</a> : p.name}</strong>
+              <span class="project-years"> · {p.years}</span>
+              <p>{p.summary}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+  {
+    chapter.facts?.tech && (
+      <ul class="chapter-tech" aria-label="Tech">
+        {chapter.facts.tech.map((x) => (
+          <li>{x}</li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    chapter.links.length > 0 && (
+      <ul class="chapter-links">
+        {chapter.links.map((l) => (
+          <li>
+            <a href={l.url}>{l.label}</a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</article>

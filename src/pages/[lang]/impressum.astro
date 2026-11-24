@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LANGS, localizedPath, t, type Lang } from '../../i18n/lang';
+import { loadProfile } from '../../lib/content';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const { impressum } = await loadProfile();
+---
+
+<BaseLayout lang={lang} title={`${t(lang, 'impressum')} – ${impressum.name}`} path="impressum">
+  <main class="legal">
+    <p><a href={localizedPath(lang)}>← {t(lang, 'backToStory')}</a></p>
+    <h1>{t(lang, 'impressum')}</h1>
+    <p>
+      {impressum.name}<br />
+      <a href={`mailto:${impressum.email}`}>{impressum.email}</a>
+    </p>
+    <p>
+      {
+        lang === 'de'
+          ? 'Dies ist eine private Website. Für Inhalte externer Links sind deren Betreiber verantwortlich.'
+          : 'This is a private website. The operators of linked external sites are responsible for their content.'
+      }
+    </p>
+  </main>
+</BaseLayout>

@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  era: string;
+}
+
+const { src, alt, era } = Astro.props;
+---
+
+<figure class={`snapshot snapshot--${era}`}>
+  <Image src={src} alt={alt} widths={[320, 640]} sizes="(max-width: 640px) 80vw, 320px" />
+</figure>
+
+<style>
+  .snapshot {
+    margin: 1.25rem 0;
+    max-width: 320px;
+    padding: 0.5rem 0.5rem 1.5rem;
+    background: #fff;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
+    transform: rotate(-2deg);
+  }
+  .snapshot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .snapshot--electronics {
+    background: #e8f5ec;
+    transform: rotate(1.5deg);
+  }
+  .snapshot--software {
+    background: #1d2129;
+    transform: none;
+    border: 1px solid #2f3542;
+  }
+</style>
