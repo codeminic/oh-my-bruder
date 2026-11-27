@@ -10,7 +10,7 @@ const eras = defineCollection({
     id: z.enum(['lego', 'electronics', 'software']),
     order: z.number(),
     title: localized,
-    toy: z.enum(['gears', 'breadboard', 'code']),
+    toy: z.enum(['excavator', 'breadboard', 'code']),
   }),
 });
 

@@ -4,7 +4,7 @@ import type { StoryEra } from '../lib/story';
 import type { Lang } from '../i18n/lang';
 import Chapter from './Chapter.astro';
 import EraWorld from './EraWorld.astro';
-import GearTrain from '../toys/gears/GearTrain.astro';
+import ExcavatorToy from '../toys/excavator/Excavator.astro';
 import Breadboard from '../toys/breadboard/Breadboard.astro';
 import CodeToy from '../toys/code/CodeToy.astro';
 
@@ -21,8 +21,8 @@ const { era, lang } = Astro.props;
   <div class="era-inner">
     <p class="era-label" id={`era-${era.id}-title`}>{era.title}</p>
     {era.chapters.map((c) => <Chapter chapter={c} era={era.id} lang={lang} />)}
-    <div class="toy-slot" data-toy={era.toy}>
-      {era.toy === 'gears' && <GearTrain lang={lang} />}
+    <div class="toy-slot" id={`toy-${era.toy}`} data-toy={era.toy}>
+      {era.toy === 'excavator' && <ExcavatorToy lang={lang} />}
       {era.toy === 'breadboard' && <Breadboard lang={lang} />}
       {era.toy === 'code' && <CodeToy lang={lang} />}
     </div>

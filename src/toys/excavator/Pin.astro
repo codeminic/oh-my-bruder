@@ -1,0 +1,23 @@
+---
+// A Technic pin head seen end-on: black friction pin, blue long pin or tan axle pin.
+interface Props {
+  x?: number;
+  y?: number;
+  color?: 'black' | 'blue' | 'tan';
+  r?: number;
+  part?: string;
+}
+
+const { x = 0, y = 0, color = 'black', r = 4.6, part } = Astro.props;
+const C = {
+  black: ['#2b2b2b', '#0c0c0c'],
+  blue: ['#1268d6', '#073f86'],
+  tan: ['#e2cf9a', '#a8935f'],
+}[color];
+---
+
+<g transform={`translate(${x} ${y})`} data-part={part}>
+  <circle r={r} fill={C[0]} stroke={C[1]} stroke-width="1"></circle>
+  <circle r={r * 0.55} fill={C[1]}></circle>
+  <circle cx={-r * 0.35} cy={-r * 0.4} r={r * 0.28} fill="#fff" opacity="0.45"></circle>
+</g>

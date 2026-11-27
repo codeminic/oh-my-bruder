@@ -9,7 +9,7 @@ import {
 
 const eras: EraData[] = [
   { id: 'software', order: 3, title: { en: 'Software', de: 'Software' }, toy: 'code' },
-  { id: 'lego', order: 1, title: { en: 'Bricks', de: 'Steine' }, toy: 'gears' },
+  { id: 'lego', order: 1, title: { en: 'Bricks', de: 'Steine' }, toy: 'excavator' },
   { id: 'electronics', order: 2, title: { en: 'Circuits', de: 'Schaltungen' }, toy: 'breadboard' },
 ];
 
@@ -34,7 +34,7 @@ describe('buildStory', () => {
     expect(story[0].chapters.map((c) => c.id)).toEqual(['a', 'b']);
     expect(story[1].chapters).toEqual([]);
     expect(story[0].title).toBe('Bricks');
-    expect(story[0].toy).toBe('gears');
+    expect(story[0].toy).toBe('excavator');
   });
 
   it('falls back to English when German is missing', () => {

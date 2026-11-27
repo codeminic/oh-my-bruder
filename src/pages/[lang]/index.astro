@@ -2,7 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EraSection from '../../components/EraSection.astro';
 import ContactSection from '../../components/ContactSection.astro';
-import { LANGS, type Lang } from '../../i18n/lang';
+import StageTimeline from '../../components/StageTimeline.astro';
+import { LANGS, t, type Lang } from '../../i18n/lang';
 import { loadProfile, loadStory } from '../../lib/content';
 import { localize, yearsOfExperience } from '../../lib/story';
 
@@ -22,10 +23,11 @@ const tagline = localize(profile.tagline, lang).replace('{years}', String(years)
     <header class="hero" data-era="lego">
       <h1>{profile.name}</h1>
       <p class="hero-role">{localize(profile.role, lang)}</p>
-      <p class="hero-scroll" aria-hidden="true">↓</p>
+      <p class="hero-scroll" aria-hidden="true"><span class="hero-hint">{t(lang, 'scrollHint')}</span>↓</p>
     </header>
     {story.map((era) => <EraSection era={era} lang={lang} />)}
     <ContactSection profile={profile} lang={lang} years={years} />
+    <StageTimeline story={story} lang={lang} />
   </main>
 </BaseLayout>
 

@@ -1,0 +1,370 @@
+/*
+ * The scroll stage. Everything here only applies once src/scripts/stage.ts has set html.is-stage, so without JS
+ * (or with reduced motion) the page stays the plain readable long page.
+ */
+.stage-timeline,
+.hero-hint {
+  display: none;
+}
+
+.is-stage {
+  --stage-top: 4.5rem;
+  --stage-bottom: 5.75rem;
+  --world-w: max(100vw, 62svh);
+}
+
+.is-stage main {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.is-stage .site-footer {
+  position: relative;
+  z-index: 1;
+}
+#stage-spacer {
+  pointer-events: none;
+}
+
+.stage-sky {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: #121419;
+}
+
+/* Every section becomes a full-screen layer on the stage. */
+.is-stage .hero,
+.is-stage .era,
+.is-stage .today {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  transition: none;
+}
+.is-stage .era-inner {
+  max-width: none;
+}
+.is-stage .era-world {
+  inset: 0;
+  perspective: 1200px;
+}
+.is-stage .era > .era-inner > .era-label {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.25rem;
+  margin: 0;
+  opacity: 0;
+}
+
+/* Worlds are taller than the screen; the camera pans down through them. */
+.is-stage .era-world .world {
+  position: absolute;
+  top: 0;
+  left: calc(50% - var(--world-w) / 2);
+  width: var(--world-w);
+  height: calc(var(--world-w) * 2);
+  max-width: none;
+  transform-origin: 50% 25%;
+  will-change: transform, opacity;
+}
+.is-stage .world-software {
+  background: #0f1115;
+  clip-path: inset(50% 0% 50% 0%);
+}
+.is-stage .code-rain {
+  font-size: clamp(0.75rem, 1.4vw, 1rem);
+  color: rgb(127 219 202 / 0.13);
+}
+.is-stage .typing-line {
+  position: absolute;
+  top: 2.4rem;
+  left: 1.25rem;
+  bottom: auto;
+  font-size: 0.8rem;
+  opacity: 0;
+}
+
+/* Steps: one at a time, centred, between the era label and the timeline. */
+.stage-step {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: min(44rem, calc(100% - 2rem));
+  will-change: transform, opacity;
+}
+.stage-step.is-tall {
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.5rem, #000 calc(100% - 2.5rem), transparent 100%);
+}
+.stage-step > .chapter,
+.stage-step > .toy-slot > .toy {
+  margin: 0;
+}
+.is-stage .toy-slot .toy {
+  margin-top: 0;
+}
+.is-stage .today .stage-step {
+  padding: 1.5rem 0;
+}
+.is-stage .is-active {
+  pointer-events: auto;
+}
+
+/* Hero */
+.is-stage .hero {
+  color: #f3f4f6;
+  will-change: transform, opacity;
+}
+.is-stage .hero h1 {
+  font-size: clamp(2.75rem, 10vw, 7rem);
+}
+.hero-letter {
+  display: inline-block;
+  white-space: pre;
+  animation: brick-drop 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  animation-delay: calc(var(--i) * 45ms + 150ms);
+}
+@keyframes brick-drop {
+  from {
+    transform: translateY(-0.8em) rotate(-12deg);
+    opacity: 0;
+  }
+}
+.is-stage .hero-role {
+  opacity: 0.8;
+}
+.is-stage .hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1.5rem;
+  animation: bob 1.8s ease-in-out infinite;
+}
+.is-stage .hero-hint {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(0.4rem);
+  }
+}
+
+/* Electronics: pulses of current running along the traces. */
+.pcb-pulse {
+  fill: none;
+  stroke: #fff4c2;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.035 0.965;
+  opacity: 0;
+  transition: opacity 0.8s;
+  filter: drop-shadow(0 0 6px #ffe27a);
+  animation: pulse-run var(--d, 4s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+html[data-current-era='electronics'] .pcb-pulse {
+  opacity: 0.9;
+}
+@keyframes pulse-run {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Electronics → software: the CRT power-on line. */
+.stage-crt {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  background: #f4fffb;
+  box-shadow:
+    0 0 12px 3px #7fdbca,
+    0 0 40px 10px rgb(127 219 202 / 0.5);
+  transform: scaleX(0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Timeline */
+.is-stage .stage-timeline {
+  display: block;
+  position: absolute;
+  left: 50%;
+  bottom: 0.9rem;
+  width: min(56rem, calc(100% - 1.5rem));
+  transform: translateX(-50%);
+  padding: 0.55rem 1rem 0.6rem;
+  border-radius: 1rem;
+  background: rgb(14 16 21 / 0.62);
+  color: #f3f4f6;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.25);
+  pointer-events: auto;
+  z-index: 10;
+}
+.tl-track {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1.05rem;
+  height: 2px;
+  background: rgb(255 255 255 / 0.18);
+}
+.tl-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #f4c20d, #e3bd5b 40%, #7fdbca);
+  box-shadow: 0 0 8px rgb(127 219 202 / 0.6);
+}
+.tl-eras,
+.tl-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tl-eras {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+}
+.tl-era {
+  flex: var(--n, 1) 1 0;
+  min-width: 0;
+}
+.tl-era-name {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s;
+}
+.tl-era.is-current .tl-era-name {
+  opacity: 1;
+}
+.tl-steps {
+  display: flex;
+  justify-content: space-around;
+  height: 1.3rem;
+  align-items: center;
+}
+.tl-steps li {
+  position: relative;
+}
+.tl-dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.tl-dot::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #f3f4f6;
+  opacity: 0.4;
+  transition:
+    transform 0.25s,
+    opacity 0.25s;
+}
+.tl-dot--toy::before {
+  border-radius: 2px;
+  transform: rotate(45deg) scale(0.85);
+}
+.tl-dot.is-passed::before {
+  opacity: 0.9;
+}
+.tl-dot[aria-current='step']::before {
+  opacity: 1;
+  transform: scale(1.5);
+  box-shadow: 0 0 10px #fff;
+}
+.tl-dot--toy[aria-current='step']::before {
+  transform: rotate(45deg) scale(1.3);
+}
+.tl-tip {
+  position: absolute;
+  bottom: calc(100% + 0.6rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  background: #0f1115;
+  color: #f3f4f6;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+.tl-dot:hover .tl-tip,
+.tl-dot:focus-visible .tl-tip {
+  opacity: 1;
+  transform: translateX(-50%);
+}
+.tl-steps li:first-child .tl-tip {
+  left: 0;
+  transform: translateY(4px);
+}
+.tl-steps li:first-child .tl-dot:hover .tl-tip,
+.tl-steps li:first-child .tl-dot:focus-visible .tl-tip {
+  transform: none;
+}
+.tl-era[data-era='today'] .tl-tip {
+  left: auto;
+  right: 0;
+  transform: translateY(4px);
+}
+.tl-era[data-era='today'] .tl-dot:hover .tl-tip,
+.tl-era[data-era='today'] .tl-dot:focus-visible .tl-tip {
+  transform: none;
+}
+
+@media (max-width: 600px) {
+  .is-stage {
+    --stage-top: 3.75rem;
+    --stage-bottom: 4.75rem;
+  }
+  .is-stage .stage-timeline {
+    padding-inline: 0.6rem;
+  }
+  .tl-era-name {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
+  .tl-eras {
+    gap: 0.2rem;
+  }
+  .tl-dot {
+    width: 1.25rem;
+  }
+  .is-stage .typing-line {
+    display: none;
+  }
+}

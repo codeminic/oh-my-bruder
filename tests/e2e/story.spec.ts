@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { goToStep, opacityOf } from './helpers';
 
 async function scrollThrough(page: Page) {
   await page.evaluate(async () => {
@@ -61,17 +62,17 @@ for (const lang of ['en', 'de'] as const) {
 
 test('language switch keeps the reading position', async ({ page }) => {
   await page.goto('/en/');
-  await page.locator('#ch-apprenticeship').scrollIntoViewIfNeeded();
-  await page.waitForTimeout(300);
+  await goToStep(page, '#ch-apprenticeship');
   await page.locator('.lang-switch').click();
   await page.waitForURL('**/de/#ch-apprenticeship');
   await expect(page.locator('#ch-apprenticeship')).toBeInViewport();
+  await expect.poll(() => opacityOf(page.locator('#ch-apprenticeship'))).toBe(1);
   expect(await page.evaluate(() => localStorage.getItem('cv-lang'))).toBe('de');
 });
 
 test('language switch stays visible at the end of the story', async ({ page }) => {
   await page.goto('/en/');
-  await page.locator('#contact').scrollIntoViewIfNeeded();
+  await goToStep(page, '#contact');
   await expect(page.locator('.lang-switch')).toBeInViewport();
 });
 

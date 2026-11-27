@@ -36,7 +36,7 @@ Gotchas:
 - UI strings: `src/i18n/ui.ts`. Language helpers: `src/i18n/lang.ts`.
 - Worlds (era backdrops): `src/worlds/{lego,electronics,software}/World.astro`. Scroll choreography:
   `src/scripts/scrollStory.ts`. Motion modes (`full` / `simple` / `reduced`): `src/lib/motion.ts`.
-- Toys, each with pure logic in a `.ts` file plus a component: `src/toys/gears`, `src/toys/breadboard`, `src/toys/code`.
+- Toys, each with pure logic in a `.ts` file plus a component: `src/toys/excavator`, `src/toys/breadboard`, `src/toys/code`.
 - Legal pages: `src/pages/[lang]/impressum.astro`, `src/pages/[lang]/privacy.astro`.
 
 ## Owner's decisions (don't undo without asking)

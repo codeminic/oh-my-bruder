@@ -40,7 +40,7 @@ const chips = [
   }
   {
     chips.map((c) => (
-      <g transform={`translate(${c.x} ${c.y})`}>
+      <g class="pcb-chip" transform={`translate(${c.x} ${c.y})`}>
         {Array.from({ length: c.pins }, (_, i) => (
           <>
             <rect x={10 + i * ((c.w - 20) / (c.pins - 1)) - 3} y={-10} width="6" height="12" fill="#c0c0c0" />

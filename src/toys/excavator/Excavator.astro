@@ -1,0 +1,532 @@
+---
+import { t, type Lang } from '../../i18n/lang';
+import Actuator from './Actuator.astro';
+import Liftarm from './Liftarm.astro';
+import Pin from './Pin.astro';
+import { BOOM_LEN, DRIVE, PIVOT, STICK_LEN, actuators, pose } from './excavator';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const start = pose(0);
+const acts = actuators(start);
+
+/** A Technic gear: trapezoid teeth, a darker web, four lightening holes and a cross-shaped axle hole. */
+function gearPath(r: number, teeth: number) {
+  const pts: string[] = [];
+  const step = (2 * Math.PI) / teeth;
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step;
+    for (const [da, rr] of [
+      [0, r - 3],
+      [step * 0.28, r + 2],
+      [step * 0.5, r + 2],
+      [step * 0.78, r - 3],
+    ] as const) {
+      pts.push(`${(Math.cos(a + da) * rr).toFixed(1)},${(Math.sin(a + da) * rr).toFixed(1)}`);
+    }
+  }
+  return `M${pts.join('L')}Z`;
+}
+const CROSS = (s: number) =>
+  `M${-s},${-s * 0.32}h${s * 0.68}v${-s * 0.68}h${s * 0.64}v${s * 0.68}h${s * 0.68}v${s * 0.64}h${-s * 0.68}v${s * 0.68}h${-s * 0.64}v${-s * 0.68}h${-s * 0.68}z`;
+
+// The brick pile the bucket digs into.
+const pile = [
+  { x: 288, y: 218, w: 30, c: '#c91a09' },
+  { x: 318, y: 218, w: 40, c: '#0055bf' },
+  { x: 358, y: 218, w: 30, c: '#237841' },
+  { x: 388, y: 218, w: 22, c: '#fe8a18' },
+  { x: 304, y: 204, w: 30, c: '#fe8a18' },
+  { x: 340, y: 204, w: 30, c: '#f4f4f4' },
+  { x: 372, y: 204, w: 22, c: '#c91a09' },
+  { x: 326, y: 190, w: 22, c: '#0055bf' },
+];
+const loadColors = ['#c91a09', '#0055bf', '#237841', '#fe8a18'];
+---
+
+<div class="toy toy-excavator" data-toy-root="excavator">
+  <p class="toy-label">{t(lang, 'tryIt')} · <span>{t(lang, 'toyExcavatorLabel')}</span></p>
+  <svg viewBox="0 0 460 260" class="exc-svg" role="group" aria-label={t(lang, 'toyExcavatorLabel')}>
+    <defs>
+      <linearGradient id="exc-g-yellow" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffe066"></stop>
+        <stop offset="0.45" stop-color="#f6c412"></stop>
+        <stop offset="1" stop-color="#cf9c00"></stop>
+      </linearGradient>
+      <linearGradient id="exc-g-dbg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8b8e89"></stop>
+        <stop offset="0.5" stop-color="#6c6e68"></stop>
+        <stop offset="1" stop-color="#4b4d48"></stop>
+      </linearGradient>
+      <linearGradient id="exc-g-lbg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#dfe2e4"></stop>
+        <stop offset="0.5" stop-color="#a7abae"></stop>
+        <stop offset="1" stop-color="#7f8487"></stop>
+      </linearGradient>
+      <linearGradient id="exc-g-glass" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#d8f0fb" stop-opacity="0.75"></stop>
+        <stop offset="0.5" stop-color="#9fd3f0" stop-opacity="0.45"></stop>
+        <stop offset="1" stop-color="#6fb4dc" stop-opacity="0.6"></stop>
+      </linearGradient>
+      <radialGradient id="exc-g-tyre" cx="0.4" cy="0.35" r="0.7">
+        <stop offset="0" stop-color="#4a4a4a"></stop>
+        <stop offset="1" stop-color="#151515"></stop>
+      </radialGradient>
+    </defs>
+
+    <!-- Baseplate -->
+    <rect x="0" y="232" width="460" height="28" rx="4" fill="#237841"></rect>
+    <rect x="0" y="232" width="460" height="4" fill="#fff" opacity="0.12"></rect>
+    {
+      Array.from({ length: 23 }, (_, i) => (
+        <g>
+          <rect x={6 + i * 20} y="227" width="10" height="6" rx="1.5" fill="#237841" />
+          <rect x={7.5 + i * 20} y="227.8" width="3" height="4" rx="1" fill="#fff" opacity="0.25" />
+        </g>
+      ))
+    }
+
+    <!-- Brick pile -->
+    {
+      pile.map((b) => (
+        <g>
+          <rect x={b.x + 4} y={b.y - 4} width="8" height="5" rx="1.5" fill={b.c} />
+          <rect x={b.x + 5} y={b.y - 3.5} width="2.5" height="3.5" rx="1" fill="#fff" opacity="0.35" />
+          <rect x={b.x} y={b.y} width={b.w - 1} height="14" rx="2" fill={b.c} />
+          <rect x={b.x} y={b.y} width={b.w - 1} height="3" rx="1.5" fill="#fff" opacity="0.28" />
+          <rect x={b.x} y={b.y + 10} width={b.w - 1} height="4" rx="1.5" fill="#000" opacity="0.2" />
+        </g>
+      ))
+    }
+    <g class="exc-falling"></g>
+
+    <!-- Everything below drives together; the chassis is what you grab to drive it. -->
+    <g class="exc-machine" transform="translate(0 0)">
+    <g
+      class="exc-chassis"
+      data-chassis
+      role="slider"
+      tabindex="0"
+      aria-label={t(lang, 'toyExcavatorDrive')}
+      aria-valuemin={DRIVE.min}
+      aria-valuemax={DRIVE.max}
+      aria-valuenow="0"
+    >
+    <!-- Undercarriage: a tread loop round two sprockets, rollers on a frame -->
+    <rect x="33" y="196" width="172" height="36" rx="18" fill="#1d1d1d"></rect>
+    <rect class="exc-tread" x="33" y="196" width="172" height="36" rx="18" fill="none" stroke="#3a3a3a" stroke-width="5" stroke-dasharray="7 3"></rect>
+    <rect class="exc-tread" x="31" y="194" width="176" height="40" rx="20" fill="none" stroke="#111" stroke-width="2" stroke-dasharray="3 7"></rect>
+    <Liftarm points={[[51, 214], [187, 214]]} w={12} color="dbg" />
+    {
+      [51, 187].map((x) => (
+        <g transform={`translate(${x} 214)`}>
+          <g class="exc-wheel" data-r="13">
+            <path d={gearPath(13, 10)} fill="url(#exc-g-lbg)" stroke="#6b7073" stroke-width="0.8" />
+            <circle r="6.5" fill="#8d9295" />
+            <path d={CROSS(4)} fill="#2a2c2e" />
+          </g>
+        </g>
+      ))
+    }
+    {
+      [85, 119, 153].map((x) => (
+        <g transform={`translate(${x} 222)`}>
+          <circle r="8" fill="url(#exc-g-tyre)" />
+          <g class="exc-wheel" data-r="8">
+            <circle r="4" fill="#a7abae" />
+            <path d={CROSS(2.4)} fill="#2a2c2e" />
+          </g>
+        </g>
+      ))
+    }
+
+    <!-- Counterweight: three stacked beams -->
+    {[160, 174, 188].map((y) => <Liftarm points={[[26, y], [60, y]]} w={14} color="dbg" />)}
+
+    <!-- Chassis and the yellow body panel -->
+    <Liftarm points={[[42, 192], [206, 192]]} w={12} color="dbg" />
+    <path d="M52,186 V158 Q52,150 60,150 H192 Q204,150 206,162 L208,186 Z" fill="url(#exc-g-yellow)" stroke="#9c7400" stroke-width="2"></path>
+    <path d="M56,154 H190" stroke="#fff" stroke-width="2" opacity="0.4" stroke-linecap="round"></path>
+    {Array.from({ length: 4 }, (_, i) => <rect x={134 + i * 7} y="160" width="3.5" height="18" rx="1.5" fill="#3a2c00" opacity="0.55" />)}
+
+    <!-- Cab: a yellow beam cage round a clear windscreen, seat and levers behind it -->
+    <path d="M78,150 v-18 q0,-6 6,-6 h12 v24 z" fill="#1b1b1b"></path>
+    <path d="M104,140 l10,-14" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round"></path>
+    <circle cx="114" cy="126" r="3" fill="#c91a09"></circle>
+    <path d="M68,100 H114 L128,116 V154 H68 Z" fill="url(#exc-g-glass)"></path>
+    <path d="M76,106 l14,0 l-12,30 l-4,0z" fill="#fff" opacity="0.45"></path>
+    <Liftarm points={[[68, 154], [68, 100], [114, 100], [128, 116], [128, 154]]} w={10} color="yellow" />
+    <rect x="80" y="88" width="12" height="9" rx="3" fill="#fe8a18"></rect>
+    <rect x="82" y="89.5" width="4" height="5" rx="1.5" fill="#fff" opacity="0.5"></rect>
+    </g>
+
+    <!-- Boom mount and the gears on the boom axle -->
+    <Liftarm points={[[148, 192], [165, 165], [184, 192]]} w={12} color="dbg" />
+    <g transform="translate(145 185)">
+      <path class="exc-gear-small" d={gearPath(8, 8)} fill="url(#exc-g-lbg)" stroke="#6b7073" stroke-width="0.8"></path>
+      <path d={CROSS(3)} fill="#2a2c2e"></path>
+    </g>
+    <g transform={`translate(${PIVOT.x} ${PIVOT.y})`}>
+      <g class="exc-gear-big">
+        <path d={gearPath(20, 24)} fill="url(#exc-g-lbg)" stroke="#6b7073" stroke-width="0.8"></path>
+        <circle r="14" fill="#9a9fa2"></circle>
+        {[0, 90, 180, 270].map((a) => <circle cx={Math.cos((a * Math.PI) / 180) * 9} cy={Math.sin((a * Math.PI) / 180) * 9} r="3" fill="#3a3c3e" />)}
+        <path d={CROSS(4)} fill="#2a2c2e"></path>
+      </g>
+    </g>
+
+    <Actuator name="boom" seg={acts.boom} barrel={44} />
+
+    <!-- Arm: boom › stick › bucket, each rotating about its own pin -->
+    <g class="exc-boom" transform={`translate(${PIVOT.x} ${PIVOT.y}) rotate(${start.boom})`}>
+      <Liftarm points={[[58, -14], [58, -2]]} w={9} color="dbg" />
+      <Liftarm points={[[70, -20], [70, -34]]} w={9} color="dbg" />
+      <Liftarm points={[[0, 0], [70, -20], [BOOM_LEN, 0]]} w={14} color="yellow" />
+      <g class="exc-stick" transform={`translate(${BOOM_LEN} 0) rotate(${start.stick - start.boom})`}>
+        <Liftarm points={[[14, 0], [14, -12]]} w={9} color="dbg" />
+        <Liftarm points={[[-14, -14], [0, 0], [STICK_LEN, 0]]} w={12} color="dbg" />
+        <g
+          class="exc-bucket"
+          data-bucket
+          role="slider"
+          tabindex="0"
+          aria-label={t(lang, 'toyExcavatorHint')}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          transform={`translate(${STICK_LEN} 0) rotate(${start.bucket - start.stick})`}
+        >
+          <circle class="exc-hit" cx="18" cy="10" r="34" fill="transparent"></circle>
+          <g class="exc-load">
+            {
+              loadColors.map((c, i) => (
+                <g>
+                  <rect x={2 + i * 9} y={-9 - (i % 2) * 4} width="10" height="10" rx="1.5" fill={c} />
+                  <rect x={2 + i * 9} y={-9 - (i % 2) * 4} width="10" height="2.5" rx="1" fill="#fff" opacity="0.3" />
+                </g>
+              ))
+            }
+          </g>
+          <path class="exc-scoop" d="M-4,-3 L40,-3 L45,5 Q43,32 16,37 Q-7,35 -11,12 Z" fill="url(#exc-g-dbg)" stroke="#2c2e2a" stroke-width="1.5"></path>
+          <path d="M-4,-3 L40,-3" stroke="#a7abae" stroke-width="3" stroke-linecap="round"></path>
+          <path d="M2,8 Q4,26 16,30 M14,6 Q18,22 30,24" fill="none" stroke="#3b3d39" stroke-width="1.5"></path>
+          {[0, 1, 2, 3].map((i) => <path d={`M${31 + i * 4},-3 l5,-8 l2.5,9z`} fill="#c4c8ca" stroke="#6b7073" stroke-width="0.6" />)}
+          <Liftarm points={[[0, 0], [-8, -8]]} w={8} color="dbg" />
+          <circle class="exc-handle" cx="17" cy="16" r="11" fill="none" stroke="#fff" stroke-width="2.5"></circle>
+          <Pin color="black" r={4} />
+        </g>
+        <Actuator name="bucket" seg={acts.bucket} barrel={50} />
+        <Pin color="black" r={4.6} />
+      </g>
+      <Actuator name="stick" seg={acts.stick} barrel={40} />
+      <Pin x={70} y={-20} color="blue" r={4.4} />
+      <Pin x={BOOM_LEN} color="black" r={5} />
+      <Pin color="tan" r={5.4} />
+    </g>
+    </g>
+  </svg>
+  <p class="toy-done" role="status">{t(lang, 'toyExcavatorDone')}</p>
+</div>
+
+<style>
+  .exc-svg {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow: visible;
+  }
+  .exc-bucket,
+  .exc-chassis {
+    cursor: grab;
+    /* Only the machine captures touch, so swipes elsewhere on the toy still scroll the page. */
+    touch-action: none;
+  }
+  .exc-chassis {
+    cursor: ew-resize;
+    /* Sideways swipes drive; vertical swipes still scroll the page. */
+    touch-action: pan-y;
+  }
+  .exc-bucket:active {
+    cursor: grabbing;
+  }
+  /* Focus shows as a glow (keyboard) instead of a box round the whole machine. */
+  .exc-chassis:focus,
+  .exc-bucket:focus {
+    outline: none;
+  }
+  .exc-chassis:focus-visible {
+    filter: drop-shadow(0 0 2px #4f9dff) drop-shadow(0 0 2px #4f9dff);
+  }
+  .exc-bucket:focus-visible {
+    outline: none;
+  }
+  .exc-bucket:focus-visible .exc-scoop {
+    stroke: #4f9dff;
+    stroke-width: 4;
+  }
+  .exc-handle {
+    opacity: 0.85;
+    animation: exc-pulse 1.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  [data-complete='true'] .exc-handle {
+    animation: none;
+  }
+  @keyframes exc-pulse {
+    50% {
+      transform: scale(1.25);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .exc-handle {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { Draggable } from 'gsap/Draggable';
+  import {
+    BOOM_LEN,
+    Excavator,
+    PIVOT,
+    STICK_LEN,
+    actuators,
+    clampDrive,
+    nearestLift,
+    pose,
+    stickEnd,
+    wheelTurn,
+  } from './excavator';
+
+  gsap.registerPlugin(Draggable);
+
+  const KEY_STEP = 0.1;
+  const DRIVE_STEP = 10;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  type Pt = { x: number; y: number };
+  const setLine = (el: Element, p: Pt, q: Pt) => {
+    el.setAttribute('x1', p.x.toFixed(1));
+    el.setAttribute('y1', p.y.toFixed(1));
+    el.setAttribute('x2', q.x.toFixed(1));
+    el.setAttribute('y2', q.y.toFixed(1));
+  };
+
+  /** Mirrors Actuator.astro: the rod spans both pins, the barrel covers the first `data-barrel` units of it. */
+  const placeActuator = (g: SVGGElement, a: Pt, b: Pt) => {
+    const part = (name: string) => g.querySelector(`[data-part="${name}"]`)!;
+    const len = Math.hypot(b.x - a.x, b.y - a.y);
+    const L = Math.min(Number(g.dataset.barrel), len - 6);
+    const e = { x: a.x + ((b.x - a.x) * L) / len, y: a.y + ((b.y - a.y) * L) / len };
+    setLine(part('rod'), a, b);
+    setLine(part('rod-hi'), a, b);
+    setLine(part('barrel'), a, e);
+    setLine(part('barrel-hi'), a, e);
+    part('collar').setAttribute('cx', e.x.toFixed(1));
+    part('collar').setAttribute('cy', e.y.toFixed(1));
+    part('pin-a').setAttribute('transform', `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`);
+    part('pin-b').setAttribute('transform', `translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})`);
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-toy-root="excavator"]')) {
+    const slot = root.closest<HTMLElement>('[data-toy]') ?? root;
+    const svg = root.querySelector('svg')!;
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel)!;
+    const boom = q<SVGGElement>('.exc-boom');
+    const stick = q<SVGGElement>('.exc-stick');
+    const bucket = q<SVGGElement>('.exc-bucket');
+    const load = q<SVGGElement>('.exc-load');
+    const gearBig = q<SVGGElement>('.exc-gear-big');
+    const gearSmall = q<SVGPathElement>('.exc-gear-small');
+    const acts = {
+      boom: q<SVGGElement>('[data-act="boom"]'),
+      stick: q<SVGGElement>('[data-act="stick"]'),
+      bucket: q<SVGGElement>('[data-act="bucket"]'),
+    };
+    const falling = q<SVGGElement>('.exc-falling');
+    const machine = q<SVGGElement>('.exc-machine');
+    const chassis = q<SVGGElement>('[data-chassis]');
+    const wheels = [...root.querySelectorAll<SVGGElement>('.exc-wheel')];
+    const treads = [...root.querySelectorAll<SVGRectElement>('.exc-tread')];
+    const ex = new Excavator();
+    let drive = 0;
+
+    // Driving moves the whole machine; the sprockets and rollers roll and the tread links travel with it.
+    const setDrive = (x: number) => {
+      drive = clampDrive(x);
+      machine.setAttribute('transform', `translate(${drive.toFixed(2)} 0)`);
+      for (const w of wheels) w.setAttribute('transform', `rotate(${wheelTurn(drive, Number(w.dataset.r)).toFixed(1)})`);
+      for (const t of treads) t.style.strokeDashoffset = String(-drive);
+      chassis.setAttribute('aria-valuenow', String(Math.round(drive)));
+    };
+
+    const render = () => {
+      const p = pose(ex.lift);
+      boom.setAttribute('transform', `translate(${PIVOT.x} ${PIVOT.y}) rotate(${p.boom.toFixed(2)})`);
+      stick.setAttribute('transform', `translate(${BOOM_LEN} 0) rotate(${(p.stick - p.boom).toFixed(2)})`);
+      bucket.setAttribute('transform', `translate(${STICK_LEN} 0) rotate(${(p.bucket - p.stick).toFixed(2)})`);
+      // The big gear sits on the boom axle; the small one meshes with it (24:8 teeth).
+      gearBig.setAttribute('transform', `rotate(${p.boom.toFixed(2)})`);
+      gearSmall.setAttribute('transform', `rotate(${(p.boom * -3).toFixed(2)})`);
+      const seg = actuators(p);
+      placeActuator(acts.boom, seg.boom.a, seg.boom.b);
+      placeActuator(acts.stick, seg.stick.a, seg.stick.b);
+      placeActuator(acts.bucket, seg.bucket.a, seg.bucket.b);
+      bucket.setAttribute('aria-valuenow', String(Math.round(ex.lift * 100)));
+    };
+
+    const dump = () => {
+      gsap.set(load, { opacity: 0 });
+      if (reduced) return;
+      const end = stickEnd(pose(ex.lift));
+      const from = { x: end.x + drive, y: end.y };
+      ['#d01012', '#0055bf', '#237841', '#fe8a18'].forEach((c, i) => {
+        const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        r.setAttribute('width', '10');
+        r.setAttribute('height', '10');
+        r.setAttribute('rx', '1.5');
+        r.setAttribute('fill', c);
+        falling.append(r);
+        gsap
+          .timeline({ onComplete: () => r.remove() })
+          .fromTo(
+            r,
+            { x: from.x + 20 + i * 4, y: from.y + 20, rotation: 0, svgOrigin: '5 5' },
+            {
+              x: from.x + 4 + i * 14,
+              y: 176 + (i % 2) * 12,
+              rotation: 90 + i * 40,
+              duration: 0.7 + i * 0.08,
+              ease: 'bounce.out',
+            },
+          )
+          .to(r, { opacity: 0, duration: 0.4, delay: 0.8 });
+      });
+    };
+
+    const setLift = (lift: number) => {
+      const event = ex.set(lift);
+      render();
+      if (event === 'dumped') dump();
+      if (event === 'loaded') gsap.fromTo(load, { opacity: 0 }, { opacity: 1, duration: reduced ? 0 : 0.3 });
+      if (ex.completed && slot.dataset.complete !== 'true') {
+        slot.dataset.complete = 'true';
+        document.dispatchEvent(new CustomEvent('cv:toy-complete', { detail: { toy: 'excavator' } }));
+      }
+    };
+
+    // Draggable reports page coordinates; getScreenCTM() works in viewport coordinates.
+    const toSvg = (pageX: number, pageY: number) => {
+      const pt = svg.createSVGPoint();
+      pt.x = pageX - scrollX;
+      pt.y = pageY - scrollY;
+      return pt.matrixTransform(svg.getScreenCTM()!.inverse());
+    };
+
+    // Draggable drives a proxy so the SVG transforms stay under our control. The grab offset keeps the bucket from
+    // jumping to the pointer when you pick it up off-centre.
+    const proxy = document.createElement('div');
+    const grab = { x: 0, y: 0 };
+    Draggable.create(proxy, {
+      trigger: bucket,
+      type: 'x,y',
+      onPress(this: Draggable) {
+        gsap.killTweensOf(tween);
+        const p = toSvg(this.pointerX, this.pointerY);
+        const end = stickEnd(pose(ex.lift));
+        const at = { x: end.x + drive, y: end.y };
+        grab.x = p.x - at.x;
+        grab.y = p.y - at.y;
+      },
+      onDrag(this: Draggable) {
+        const p = toSvg(this.pointerX, this.pointerY);
+        setLift(nearestLift({ x: p.x - grab.x - drive, y: p.y - grab.y }));
+      },
+    });
+
+    // Keys glide the arm rather than jumping it.
+    const tween = { v: 0 };
+    const glideTo = (target: number) => {
+      const to = Math.min(1, Math.max(0, target));
+      tween.v = ex.lift;
+      gsap.killTweensOf(tween);
+      gsap.to(tween, {
+        v: to,
+        duration: reduced ? 0 : 0.25 + Math.abs(to - ex.lift) * 0.6,
+        ease: 'power2.out',
+        onUpdate: () => setLift(tween.v),
+        onComplete: () => setLift(to),
+      });
+    };
+
+    let keyTarget = 0;
+    bucket.addEventListener('keydown', (e) => {
+      const base = gsap.isTweening(tween) ? keyTarget : ex.lift;
+      const next: Record<string, number> = {
+        ArrowUp: base + KEY_STEP,
+        ArrowRight: base + KEY_STEP,
+        ArrowDown: base - KEY_STEP,
+        ArrowLeft: base - KEY_STEP,
+        PageUp: base + 0.25,
+        PageDown: base - 0.25,
+        Home: 0,
+        End: 1,
+      };
+      if (!(e.key in next)) return;
+      e.preventDefault();
+      keyTarget = Math.min(1, Math.max(0, next[e.key]));
+      glideTo(keyTarget);
+    });
+
+    // Grab the body or tracks and drag sideways to drive.
+    const driveProxy = document.createElement('div');
+    let driveFrom = { pointer: 0, drive: 0 };
+    Draggable.create(driveProxy, {
+      trigger: chassis,
+      type: 'x',
+      onPress(this: Draggable) {
+        gsap.killTweensOf(driveTween);
+        driveFrom = { pointer: toSvg(this.pointerX, this.pointerY).x, drive };
+      },
+      onDrag(this: Draggable) {
+        setDrive(driveFrom.drive + toSvg(this.pointerX, this.pointerY).x - driveFrom.pointer);
+      },
+    });
+
+    const driveTween = { v: 0 };
+    let driveTarget = 0;
+    chassis.addEventListener('keydown', (e) => {
+      const base = gsap.isTweening(driveTween) ? driveTarget : drive;
+      const next: Record<string, number> = {
+        ArrowRight: base + DRIVE_STEP,
+        ArrowUp: base + DRIVE_STEP,
+        ArrowLeft: base - DRIVE_STEP,
+        ArrowDown: base - DRIVE_STEP,
+        Home: -Infinity,
+        End: Infinity,
+      };
+      if (!(e.key in next)) return;
+      e.preventDefault();
+      driveTarget = clampDrive(Math.max(-1e6, Math.min(1e6, next[e.key])));
+      driveTween.v = drive;
+      gsap.killTweensOf(driveTween);
+      gsap.to(driveTween, {
+        v: driveTarget,
+        duration: reduced ? 0 : 0.3 + Math.abs(driveTarget - drive) / 120,
+        ease: 'power2.inOut',
+        onUpdate: () => setDrive(driveTween.v),
+        onComplete: () => setDrive(driveTarget),
+      });
+    });
+
+    render();
+    setDrive(0);
+  }
+</script>

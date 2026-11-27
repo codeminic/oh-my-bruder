@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getMotionMode, type MotionMode } from '../lib/motion';
+import { initStage } from './stage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -124,7 +125,17 @@ export function startScrollStory(): void {
     viewportWidth: innerWidth,
   });
   document.documentElement.dataset.motion = mode;
-  initScrollStory(root, mode);
+  let stageStarted = false;
+  if (mode !== 'reduced') {
+    try {
+      initStage(mode);
+      stageStarted = true;
+    } catch (err) {
+      // The stage has put the page back; fall back to the readable long page.
+      console.error(err);
+    }
+  }
+  if (!stageStarted) initScrollStory(root, mode);
   document.addEventListener('cv:toy-complete', (e) => {
     if ((e as CustomEvent<{ toy: string }>).detail.toy === 'breadboard') {
       document.getElementById('era-electronics')?.classList.add('is-lit');

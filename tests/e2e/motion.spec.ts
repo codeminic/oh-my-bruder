@@ -1,14 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-
-async function scrollThrough(page: Page) {
-  await page.evaluate(async () => {
-    for (let y = 0; y < document.documentElement.scrollHeight; y += window.innerHeight / 3) {
-      window.scrollTo(0, y);
-      await new Promise((r) => setTimeout(r, 40));
-    }
-    window.scrollTo(0, document.documentElement.scrollHeight);
-  });
-}
+import { goToStep } from './helpers';
 
 async function textOpacities(page: Page) {
   return page.locator('[data-chapter] h2, [data-chapter] .chapter-story').evaluateAll((els) =>
@@ -30,15 +21,6 @@ test.describe('reduced motion', () => {
   });
 });
 
-test('full motion on desktop leaves every chapter fully visible after scrolling', async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop');
-  await page.goto('/en/');
-  await expect(page.locator('html')).toHaveAttribute('data-motion', 'full');
-  await scrollThrough(page);
-  await page.waitForTimeout(1000);
-  expect((await textOpacities(page)).every((o) => o === 1)).toBe(true);
-});
-
 test('phones get the simple mode', async ({ page }, info) => {
   test.skip(info.project.name === 'desktop');
   await page.goto('/en/');
@@ -51,7 +33,7 @@ test('entering an era fires cv:era-enter', async ({ page }) => {
     (window as any).__eras = [];
     document.addEventListener('cv:era-enter', (e) => (window as any).__eras.push((e as CustomEvent).detail.era));
   });
-  await page.locator('#era-electronics .chapter').first().scrollIntoViewIfNeeded();
+  await goToStep(page, '#ch-apprenticeship');
   await expect.poll(() => page.evaluate(() => (window as any).__eras as string[])).toContain('electronics');
 });
 

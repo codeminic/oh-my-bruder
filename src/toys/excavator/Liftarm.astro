@@ -1,0 +1,58 @@
+---
+// A studless Technic beam (liftarm) through `points`: straight with two points, bent with three. Pin holes sit one
+// beam-width apart, like the real thing. Shading comes from the gradients defined in Excavator.astro.
+interface Props {
+  points: [number, number][];
+  w?: number;
+  color: 'yellow' | 'dbg' | 'lbg';
+}
+
+const { points, w = 14, color } = Astro.props;
+const PALETTE = {
+  yellow: { fill: 'url(#exc-g-yellow)', edge: '#9c7400', collar: '#c79800', hole: '#2e2300' },
+  dbg: { fill: 'url(#exc-g-dbg)', edge: '#363834', collar: '#565853', hole: '#141513' },
+  lbg: { fill: 'url(#exc-g-lbg)', edge: '#6b7073', collar: '#8d9295', hole: '#2a2c2e' },
+} as const;
+const pal = PALETTE[color];
+
+const segs = points.slice(1).map(([x2, y2], i) => {
+  const [x1, y1] = points[i];
+  return {
+    x: x1,
+    y: y1,
+    len: Math.hypot(x2 - x1, y2 - y1),
+    a: (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI,
+  };
+});
+const holes = segs.flatMap((s, i) => {
+  const n = Math.max(1, Math.round(s.len / w));
+  const rad = (s.a * Math.PI) / 180;
+  return Array.from({ length: n + 1 }, (_, k) => k)
+    .filter((k) => i === 0 || k > 0)
+    .map((k) => ({ x: s.x + Math.cos(rad) * (s.len * k) / n, y: s.y + Math.sin(rad) * (s.len * k) / n }));
+});
+const tf = (s: (typeof segs)[number]) => `translate(${s.x.toFixed(2)} ${s.y.toFixed(2)}) rotate(${s.a.toFixed(2)})`;
+---
+
+<g class="liftarm">
+  {
+    segs.map((s) => (
+      <rect transform={tf(s)} x={-w / 2} y={-w / 2} width={s.len + w} height={w} rx={w / 2} fill={pal.edge} stroke={pal.edge} stroke-width="2.4" />
+    ))
+  }
+  {segs.map((s) => <rect transform={tf(s)} x={-w / 2} y={-w / 2} width={s.len + w} height={w} rx={w / 2} fill={pal.fill} />)}
+  {
+    segs.map((s) => (
+      <rect transform={tf(s)} x={-w / 2 + 3} y={-w / 2 + 1.4} width={s.len + w - 6} height={w * 0.16} rx={w * 0.08} fill="#fff" opacity="0.35" />
+    ))
+  }
+  {
+    holes.map((h) => (
+      <g transform={`translate(${h.x.toFixed(2)} ${h.y.toFixed(2)})`}>
+        <circle r={w * 0.36} fill={pal.collar} />
+        <circle r={w * 0.25} fill={pal.hole} />
+        <circle cy={w * 0.06} r={w * 0.25} fill="none" stroke="#fff" stroke-width="0.8" opacity="0.18" />
+      </g>
+    ))
+  }
+</g>

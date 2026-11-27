@@ -1,7 +1,7 @@
 import type { Lang } from '../i18n/lang';
 
 export type EraId = 'lego' | 'electronics' | 'software';
-export type ToyId = 'gears' | 'breadboard' | 'code';
+export type ToyId = 'excavator' | 'breadboard' | 'code';
 export type Localized = { en: string; de?: string };
 
 export type EraData = { id: EraId; order: number; title: Localized; toy: ToyId };

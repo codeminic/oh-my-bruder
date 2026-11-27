@@ -1,0 +1,52 @@
+---
+import type { ImageMetadata } from 'astro';
+import type { StoryEra } from '../lib/story';
+import { t, type Lang } from '../i18n/lang';
+
+interface Props {
+  story: StoryEra<ImageMetadata>[];
+  lang: Lang;
+}
+
+const { story, lang } = Astro.props;
+---
+
+<!-- Only shown on the scroll stage (html.is-stage). Every dot is a real link to its step. -->
+<nav class="stage-timeline" aria-label={t(lang, 'timeline')}>
+  <div class="tl-track" aria-hidden="true"><div class="tl-fill"></div></div>
+  <ol class="tl-eras">
+    {
+      story.map((era) => (
+        <li class="tl-era" data-era={era.id} style={`--n: ${era.chapters.length + 1}`}>
+          <span class="tl-era-name" aria-hidden="true">
+            {era.title}
+          </span>
+          <ol class="tl-steps">
+            {era.chapters.map((c) => (
+              <li>
+                <a class="tl-dot" href={`#${c.anchor}`}>
+                  <span class="tl-tip">
+                    {c.years} · {c.title}
+                  </span>
+                </a>
+              </li>
+            ))}
+            <li>
+              <a class="tl-dot tl-dot--toy" href={`#toy-${era.toy}`}>
+                <span class="tl-tip">{t(lang, 'tryIt')}</span>
+              </a>
+            </li>
+          </ol>
+        </li>
+      ))
+    }
+    <li class="tl-era" data-era="today">
+      <span class="tl-era-name" aria-hidden="true">{t(lang, 'today')}</span>
+      <ol class="tl-steps">
+        <li>
+          <a class="tl-dot" href="#contact"><span class="tl-tip">{t(lang, 'contact')}</span></a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>

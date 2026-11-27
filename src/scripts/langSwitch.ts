@@ -11,6 +11,8 @@ export function initLangSwitch(): void {
   if (chapters.length && 'IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
       (entries) => {
+        // On the scroll stage every step is on screen; the stage reports the current one instead.
+        if (document.documentElement.classList.contains('is-stage')) return;
         for (const e of entries) visible.set(e.target, e.isIntersecting ? e.intersectionRatio : 0);
         let best: Element | null = null;
         let bestRatio = 0;
@@ -26,6 +28,11 @@ export function initLangSwitch(): void {
     );
     chapters.forEach((c) => observer.observe(c));
   }
+
+  document.addEventListener('cv:step', (e) => {
+    const anchor = (e as CustomEvent<{ anchor: string }>).detail.anchor;
+    link.setAttribute('href', anchor ? `${base}#${anchor}` : base);
+  });
 
   link.addEventListener('click', () => {
     try {
