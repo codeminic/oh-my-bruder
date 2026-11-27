@@ -10,4 +10,4 @@ We need a way to visualize that which looks really cool and is also a little bit
 ## Where it fits
 
 - It's for the software era (`#era-software`). Today that era's toy is the live code toy in `src/toys/code`.
-- Each era has one toy (see CLAUDE.md), so this would replace the code toy or build on it.
+- Each era has one toy (see AGENTS.md), so this would replace the code toy or build on it.
